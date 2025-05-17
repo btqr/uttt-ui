@@ -1,0 +1,23 @@
+<div class="ultimate-container">
+  <div class="mat-grid-list">
+    <div
+      class="mini-board-container"
+      *ngFor="let miniBoard of board; let big = index"
+      [class.active]="activeBoard === null || activeBoard === big"
+      [class.completed]="isBoardCompleted(big)"
+    >
+      <div class="mini-board-grid">
+        <div *ngFor="let row of [0,1,2]" class="row">
+          <div class="cell" *ngFor="let col of [0,1,2]"
+               [class.occupied-o]="getCellContent(big, row, col) == 'O'"
+               [class.occupied-x]="getCellContent(big, row, col) == 'X'"
+               [class.active-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big)"
+               (click)="makeMove(big, row, col)"
+          >
+            {{ getCellContent(big, row, col) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+/* Basic container for the entire game */
+.ultimate-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Grid layout for the mini-boards */
+.mat-grid-list {
+  width: 650px; /* Adjust as needed */
+  height: 650px; /* Adjust as needed */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0px; /* Spacing between mini-boards */
+}
+
+/* Style for each mini-board container */
+.mini-board-container {
+  background-color: white; /* White background */
+  border: 1px solid black; /* Black borders for mini-boards */
+  display: grid;
+}
+
+/* Style for completed mini-boards */
+.mini-board-container.completed {
+  opacity: 0.6; /* Slightly fade out completed boards */
+}
+
+.mini-board-grid {
+  display: flex;
+  flex-direction: column; /* Arrange rows vertically */
+  width: 100%; /* Make it take full width of parent */
+  height: 100%; /* Make it take full height of parent */
+}
+
+/* Style for each row in the mini-board */
+.row {
+  display: flex;
+  flex-grow: 1; /* Make rows take equal vertical space */
+}
+
+/* Style for each cell (assuming they are divs with class "cell") */
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid lightgray;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+
+  width: 100%;
+  aspect-ratio: 1;           // ✅ Ensures perfect square
+  box-sizing: border-box;
+
+  flex: 1 1 auto;            // ✅ Allow flexible shrinking and growing evenly
+  overflow: hidden;
+  text-align: center;
+  user-select: none;
+
+  white-space: nowrap;       // ✅ Prevent text wrapping
+  line-height: 1;            // ✅ Prevent vertical stretching
+}
+/* Optional styles for specific states */
+.cell.disabled {
+  background-color: #f0f0f0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.cell.occupied-x {
+  color: #007bff; /* Example color for X */
+}
+
+.cell.occupied-o {
+  color: #dc3545; /* Example color for O */
+}
+
+.cell.active-move {
+  background-color: #fffde7; /* soft yellow */
+}
+
+.cell.active-move:hover {
+  background-color: #e3f2fd; /* Light blue highlight */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
