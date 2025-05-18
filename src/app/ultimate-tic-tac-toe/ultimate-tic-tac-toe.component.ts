@@ -34,7 +34,6 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   constructor(private engine: EngineService, private ngZone: NgZone) {
     this.subscription = analysisResult$.subscribe(result => {
       this.ngZone.run(() => {
-        console.log("Hit")
         this.analysisResult.set(result);
       });
     });
