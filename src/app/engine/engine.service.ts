@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {AppComponent} from '../app.component';
 import {JavaPosition} from './java-position.model';
+import {AnalysisResult, Move} from './analysis-result.model';
 
 declare const TeaVM: any;
 let teavm : any;
@@ -43,15 +44,17 @@ export class EngineService {
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O') {
+  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O'): AnalysisResult {
     let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
     let r = teavm.instance.exports.analyzePosition(javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
       a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
       b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
-        javaPosition.nextBoard, javaPosition.playerToMove
+        javaPosition.nextBoard, javaPosition.playerToMove, 200
     );
+    console.log(parseEngineOutput(positionResult));
+    return parseEngineOutput(positionResult);
   }
 
 }
@@ -137,4 +140,43 @@ function convertToJavaPosition(
     nextBoard: activeBoard !== null ? activeBoard : -1,
     playerToMove: currentPlayer === 'O' ? 0 : 1 // Java: 0 = Circle/O, 1 = Cross/X
   };
+}
+
+function parseEngineOutput(input: string): AnalysisResult {
+  // Initialize empty structure
+  const moves: (Move | null)[][][] = Array.from({ length: 9 }, () =>
+    Array.from({ length: 3 }, () =>
+      Array.from({ length: 3 }, () => null as Move | null)
+    )
+  );
+  const lines = input.trim().split('\n');
+
+  let maxVisits = 0;
+  let allEvals = []
+  for (const line of lines) {
+    const [indexStr, visitsStr, scoreStr] = line.trim().split(/\s+/);
+
+    const index = parseInt(indexStr, 10);
+    const visits = parseInt(visitsStr, 10);
+    if (visits) {
+      maxVisits = Math.max(visits, maxVisits);
+    }
+    const score = parseFloat(scoreStr);
+    if (score) {
+      allEvals.push(score);
+    }
+
+    const big = Math.floor(index / 9);
+    const small = index % 9;
+    const row = Math.floor(small / 3);
+    const col = small % 3;
+
+    moves[big][row][col] = { visits, score };
+  }
+  allEvals.sort((a, b) => b - a);
+  const index = Math.min(9, allEvals.length - 1);
+  let threshold : number | null = allEvals.length > 0 ? allEvals[index] : 0;
+  // let threshold = 0;
+
+  return { moves, maxVisits: maxVisits, evalThreshold: threshold };
 }

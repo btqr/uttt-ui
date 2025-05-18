@@ -15,6 +15,17 @@
                (click)="makeMove(big, row, col)"
           >
             {{ getCellContent(big, row, col) }}
+            <ng-container *ngIf="getMove(big, row, col) as move">
+              <div class="engine-data"
+                   [class.best]="isBestMove(big, row, col)"
+                   [class.bad] = "move.score < (analysisResult?.evalThreshold ?? -10)">
+                <small>
+<!--                  <span class="visits">V: {{ move.visits }}</span><br>-->
+                  <span class="eval">{{ move.score | number:'1.2-2' }}</span>
+                </small>
+              </div>
+            </ng-container>
+
           </div>
         </div>
       </div>

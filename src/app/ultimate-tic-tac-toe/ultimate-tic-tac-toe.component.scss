@@ -43,6 +43,7 @@
 
 /* Style for each cell (assuming they are divs with class "cell") */
 .cell {
+  position: relative; /* ← Required to anchor .engine-data inside */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,17 +54,18 @@
   cursor: pointer;
 
   width: 100%;
-  aspect-ratio: 1;           // ✅ Ensures perfect square
+  aspect-ratio: 1;
   box-sizing: border-box;
 
-  flex: 1 1 auto;            // ✅ Allow flexible shrinking and growing evenly
+  flex: 1 1 auto;
   overflow: hidden;
   text-align: center;
   user-select: none;
 
-  white-space: nowrap;       // ✅ Prevent text wrapping
-  line-height: 1;            // ✅ Prevent vertical stretching
+  white-space: nowrap;
+  line-height: 1;
 }
+
 /* Optional styles for specific states */
 .cell.disabled {
   background-color: #f0f0f0;
@@ -84,8 +86,61 @@
 }
 
 .cell.active-move:hover {
-  background-color: #e3f2fd; /* Light blue highlight */
+  background-color: #e3f2fd;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.cell.active-move:hover .engine-data {
+  background-color: #e3f2fd;
+  box-shadow: none; /* or reduce */
+  opacity: 1;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  outline: none;
+}
+
+.engine-data {
+  position: absolute;
+  background-color: #fffde7; /* soft yellow */
+  //bottom: 2px;
+  //right: 2px;
+  font-size: 15px;
+  line-height: 1.1;
+  //background-color: rgba(255, 255, 255, 0.8);
+  opacity: 0.9;
+  padding: 1px 2px;
+  border-radius: 2px;
+  pointer-events: none;
+  user-select: none;
+  text-align: right;
+  z-index: 1;
+  border: none;
+  outline: none;
+}
+
+.engine-data .visits {
+  color: #3f51b5; // blue for visits
+}
+
+.engine-data .eval {
+  color: #e91e63; // pink for score
+}
+
+.engine-data.best {
+  font-weight: 900;            /* Heavier than 'bold' */
+  font-size: 22px;             /* Larger text */
+  color: #000000;              /* Solid black for max contrast */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* subtle shadow for depth */
+  /* Optional: add background or border */
+  background-color: #fffae6;  /* soft highlight background */
+  border-radius: 3px;
+  opacity: 1.0;
+  padding: 2px 4px;
+}
+
+.engine-data.bad {
+  opacity: 0.3;
+}
+

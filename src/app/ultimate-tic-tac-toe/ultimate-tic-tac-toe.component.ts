@@ -3,6 +3,7 @@ import { EngineService } from '../engine/engine.service';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import {AnalysisResult, Move} from '../engine/analysis-result.model';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
@@ -18,11 +19,13 @@ export class UltimateTicTacToeComponent implements OnInit {
   currentPlayer: 'X' | 'O' = 'X';
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
+  analysisResult: AnalysisResult | null = null;
 
   constructor(private engine: EngineService) {}
 
-  ngOnInit() {
-    this.engine.init();
+  async ngOnInit() {
+    await this.engine.init();
+    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer);
   }
 
   makeMove(big: number, row: number, col: number): void {
@@ -34,14 +37,14 @@ export class UltimateTicTacToeComponent implements OnInit {
       this.lastMove = { big, row, col };
       this.activeBoard = row * 3 + col;
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer);
+      this.updateAnalysisResult(this.engine.analyze(this.board, this.activeBoard, this.currentPlayer));
 
-      if (this.currentPlayer === 'O') {
-        setTimeout(() => {
-          const move = this.engine.getRandomMove(this.board, this.activeBoard);
-          if (move) this.makeMove(move.big, move.row, move.col);
-        }, 500);
-      }
+      // if (this.currentPlayer === 'O') {
+      //   setTimeout(() => {
+      //     const move = this.engine.getRandomMove(this.board, this.activeBoard);
+      //     if (move) this.makeMove(move.big, move.row, move.col);
+      //   }, 500);
+      // }
     }
   }
 
@@ -61,7 +64,20 @@ export class UltimateTicTacToeComponent implements OnInit {
     return false;
   }
 
+  updateAnalysisResult(result: AnalysisResult): void {
+    this.analysisResult = result;
+  }
+
+  isBestMove(big: number, row: number, col: number): boolean {
+    const move = this.getMove(big, row, col);
+    return move?.visits === this.analysisResult?.maxVisits;
+  }
+
   getCellContent(big: number, row: number, col: number): string {
     return this.board[big][row][col];
+  }
+
+  getMove(big: number, row: number, col: number): Move | null {
+    return this.analysisResult?.moves?.[big]?.[row]?.[col] ?? null;
   }
 }
