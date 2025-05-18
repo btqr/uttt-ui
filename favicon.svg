@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Background -->
+  <rect width="64" height="64" fill="#fffde7"></rect>
+  
+  <!-- Grid lines -->
+  <g stroke="#333" stroke-width="2">
+    <line x1="21.3" y1="0" x2="21.3" y2="64"></line>
+    <line x1="42.7" y1="0" x2="42.7" y2="64"></line>
+    <line x1="0" y1="21.3" x2="64" y2="21.3"></line>
+    <line x1="0" y1="42.7" x2="64" y2="42.7"></line>
+  </g>
+
+  <!-- X symbol in top-left cell -->
+  <g stroke="#007bff" stroke-width="3" stroke-linecap="round">
+    <line x1="4" y1="4" x2="17" y2="17"></line>
+    <line x1="4" y1="17" x2="17" y2="4"></line>
+  </g>
+
+  <!-- O symbol in center cell -->
+  <circle cx="32" cy="32" r="8" stroke="#dc3545" stroke-width="3" fill="none"></circle>
+</svg>
