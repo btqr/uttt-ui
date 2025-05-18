@@ -88,6 +88,22 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  getMiniBoardWinner(big: number): string | null {
+    const board = this.board[big];
+
+    const checkLine = (a: string, b: string, c: string) =>
+      a !== '' && a === b && b === c;
+
+    for (let i = 0; i < 3; i++) {
+      if (checkLine(board[i][0], board[i][1], board[i][2])) return board[i][2];
+      if (checkLine(board[0][i], board[1][i], board[2][i])) return board[2][i];
+    }
+    if (checkLine(board[0][0], board[1][1], board[2][2])) return board[2][2];
+    if (checkLine(board[0][2], board[1][1], board[2][0])) return board[2][0];
+
+    return null;
+  }
+
   isBestMove(big: number, row: number, col: number): boolean {
     const move = this.getMove(big, row, col);
     return move?.visits === this.analysisResult()?.maxVisits;
@@ -118,4 +134,5 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
       Array.from({length: 3}, () => Array(3).fill(''))
     );
   }
+
 }

@@ -4,6 +4,7 @@
   display: flex;
   justify-content: center; /* centers the layout-wrapper */
   padding-top: 40px;
+  flex: 1; /* fills remaining space */
 }
 
 .layout-wrapper {
@@ -112,6 +113,7 @@
 
 /* Style for each mini-board container */
 .mini-board-container {
+  position: relative; /* ✅ Add this */
   background-color: white; /* White background */
   border: 1px solid black; /* Black borders for mini-boards */
   display: grid;
@@ -177,6 +179,10 @@
 
 .cell.active-move {
   background-color: #fffde7; /* soft yellow */
+}
+
+.cell.big-win {
+  opacity: 0;
 }
 
 .cell.active-move:hover {
@@ -276,3 +282,29 @@
   background-color: #b02a37;
 }
 
+.winner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 16rem; /* Scale as needed */
+  font-weight: 900;
+  color: #dc3545;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+  text-transform: uppercase;
+}
+
+/* Color for X */
+.winner-x {
+  color: #007bff; /* Soft blue */
+}
+
+/* Color for O */
+.winner-o {
+  color: #dc3545;
+}

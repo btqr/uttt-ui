@@ -3,6 +3,7 @@ import {UltimateTicTacToeComponent} from './ultimate-tic-tac-toe/ultimate-tic-ta
 import {CommonModule} from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import {FooterComponent} from './footer/footer.component';
 
 declare const TeaVM: any;
 let teavm : any;
@@ -16,7 +17,8 @@ let teavm : any;
     CommonModule,
     UltimateTicTacToeComponent,
     MatGridListModule,
-    MatButtonModule
+    MatButtonModule,
+    FooterComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
