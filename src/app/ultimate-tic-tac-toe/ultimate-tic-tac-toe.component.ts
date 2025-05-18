@@ -21,7 +21,9 @@ export class UltimateTicTacToeComponent implements OnInit {
 
   constructor(private engine: EngineService) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.engine.init();
+  }
 
   makeMove(big: number, row: number, col: number): void {
     if (
@@ -32,6 +34,7 @@ export class UltimateTicTacToeComponent implements OnInit {
       this.lastMove = { big, row, col };
       this.activeBoard = row * 3 + col;
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer);
 
       if (this.currentPlayer === 'O') {
         setTimeout(() => {

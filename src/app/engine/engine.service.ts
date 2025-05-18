@@ -1,7 +1,29 @@
 import { Injectable } from '@angular/core';
+import {AppComponent} from '../app.component';
+import {JavaPosition} from './java-position.model';
+
+declare const TeaVM: any;
+let teavm : any;
+let positionResult: string
 
 @Injectable({providedIn: 'root'})
 export class EngineService {
+
+  constructor() {
+  }
+
+  async init(): Promise<void> {
+    teavm = await TeaVM.wasm.load('assets/classes.wasm', {
+      installImports: (imports: any, controller: any) => {
+        imports.env = {
+          returnInfo
+        };
+      }
+    });
+    teavm.main();
+    console.log('TeaVM loaded');
+  }
+
   getRandomMove(board: string[][][], activeBoard: number | null): {
     big: number;
     row: number;
@@ -20,4 +42,99 @@ export class EngineService {
     if (options.length === 0) return null;
     return options[Math.floor(Math.random() * options.length)];
   }
+
+  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O') {
+    let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
+    let a = javaPosition.smallBoardsCircle;
+    let b = javaPosition.smallBoardsCross;
+    let r = teavm.instance.exports.analyzePosition(javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
+      a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
+      b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
+        javaPosition.nextBoard, javaPosition.playerToMove
+    );
+  }
+
+}
+
+function returnInfo(result : any) {
+  positionResult = readTeaVMString(result);
+}
+
+function readTeaVMString(ptr: any) {
+  const memory = teavm.instance.exports.memory;
+  const data = new DataView(memory.buffer);
+  const offset = ptr + 12;
+  const length = data.getInt32(ptr + 8, true);
+
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const code = data.getUint16(offset + i * 2, true);
+    result += String.fromCharCode(code);
+  }
+  return result;
+}
+
+// Helper to convert 3x3 to bitboard
+function convertSmallBoard(board: string[][], player: 'X' | 'O'): number {
+  let bits = 0;
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      const cell = board[row][col];
+      if ((player === 'X' && cell === 'X') || (player === 'O' && cell === 'O')) {
+        const bitIndex = row * 3 + col;
+        bits |= (1 << bitIndex);
+      }
+    }
+  }
+  return bits;
+}
+
+// Winning masks for 3x3
+const WIN_MASKS = [
+  0b000000111, // row 0
+  0b000111000, // row 1
+  0b111000000, // row 2
+  0b001001001, // col 0
+  0b010010010, // col 1
+  0b100100100, // col 2
+  0b100010001, // diag
+  0b001010100  // anti-diag
+];
+
+// Check if bitboard is a win
+function isWin(bits: number): boolean {
+  return WIN_MASKS.some(mask => (bits & mask) === mask);
+}
+
+function convertToJavaPosition(
+  board: string[][][],
+  activeBoard: number | null,
+  currentPlayer: 'X' | 'O'
+): JavaPosition {
+  const smallBoardsCircle = new Array(9).fill(0);
+  const smallBoardsCross = new Array(9).fill(0);
+  let bigBoardCircle = 0;
+  let bigBoardCross = 0;
+
+  for (let big = 0; big < 9; big++) {
+    const smallBoard = board[big];
+
+    const bitsCircle = convertSmallBoard(smallBoard, 'O');
+    const bitsCross = convertSmallBoard(smallBoard, 'X');
+
+    smallBoardsCircle[big] = bitsCircle;
+    smallBoardsCross[big] = bitsCross;
+
+    if (isWin(bitsCircle)) bigBoardCircle |= (1 << big);
+    if (isWin(bitsCross)) bigBoardCross |= (1 << big);
+  }
+
+  return {
+    bigBoardCircle,
+    bigBoardCross,
+    smallBoardsCircle,
+    smallBoardsCross,
+    nextBoard: activeBoard !== null ? activeBoard : -1,
+    playerToMove: currentPlayer === 'O' ? 0 : 1 // Java: 0 = Circle/O, 1 = Cross/X
+  };
 }
