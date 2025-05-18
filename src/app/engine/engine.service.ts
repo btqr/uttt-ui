@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import {AppComponent} from '../app.component';
 import {JavaPosition} from './java-position.model';
 import {AnalysisResult, Move} from './analysis-result.model';
+import {BehaviorSubject, interval, map, Observable} from 'rxjs';
 
 declare const TeaVM: any;
 let teavm : any;
-let positionResult: string
+export let analysisResult$ = new BehaviorSubject<AnalysisResult | null>(null);
 
 @Injectable({providedIn: 'root'})
 export class EngineService {
@@ -14,6 +15,8 @@ export class EngineService {
   }
 
   async init(): Promise<void> {
+
+
     teavm = await TeaVM.wasm.load('assets/classes.wasm', {
       installImports: (imports: any, controller: any) => {
         imports.env = {
@@ -44,23 +47,51 @@ export class EngineService {
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number): AnalysisResult {
+  getBestMove(board: string[][][], activeBoard: number | null): {
+    big: number;
+    row: number;
+    col: number;
+  } | null {
+    let bestMove: { big: number; row: number; col: number } | null = null;
+    let maxVisits = -1;
+
+    const boardsToCheck = activeBoard !== null ? [activeBoard] : [...Array(9).keys()];
+
+    for (const big of boardsToCheck) {
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+          const move = analysisResult$.getValue()?.moves[big][row][col];
+          if (move && move.visits > maxVisits) {
+            maxVisits = move.visits;
+            bestMove = { big, row, col };
+          }
+        }
+      }
+    }
+
+    return bestMove
+  }
+
+  async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number):
+    Promise<void> {
     let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
-    let r = teavm.instance.exports.analyzePosition(javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
-      a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
-      b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
-        javaPosition.nextBoard, javaPosition.playerToMove, thinkingTime
-    );
-    console.log(parseEngineOutput(positionResult));
-    return parseEngineOutput(positionResult);
+    for (let i = 0; i < thinkingTime; i += 100) {
+      teavm.instance.exports.analyzePosition(
+        javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
+        a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
+        b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
+        javaPosition.nextBoard, javaPosition.playerToMove, Math.min(100, thinkingTime - i)
+      );
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
   }
 
 }
 
 function returnInfo(result : any) {
-  positionResult = readTeaVMString(result);
+  analysisResult$.next(parseEngineOutput(readTeaVMString(result)));
 }
 
 function readTeaVMString(ptr: any) {

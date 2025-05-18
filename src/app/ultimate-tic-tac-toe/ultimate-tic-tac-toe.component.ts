@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { EngineService } from '../engine/engine.service';
-import { CommonModule } from '@angular/common';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatButtonModule } from '@angular/material/button';
+import {ChangeDetectorRef, Component, OnInit, OnDestroy, NgZone, signal} from '@angular/core';
+import {analysisResult$, EngineService} from '../engine/engine.service';
+import {CommonModule} from '@angular/common';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatButtonModule} from '@angular/material/button';
 import {AnalysisResult, Move} from '../engine/analysis-result.model';
 import {FormsModule} from '@angular/forms';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
@@ -13,43 +14,61 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })
-export class UltimateTicTacToeComponent implements OnInit {
-  board: string[][][] = Array.from({ length: 9 }, () =>
-    Array.from({ length: 3 }, () => Array(3).fill(''))
+
+
+export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
+  board: string[][][] = Array.from({length: 9}, () =>
+    Array.from({length: 3}, () => Array(3).fill(''))
   );
   currentPlayer: 'X' | 'O' = 'X';
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
-  analysisResult: AnalysisResult | null = null;
+  analysisResult = signal<AnalysisResult | null>(null);
   thinkingTime = 100;
   showEval = true;
+  playVsAi = false;
   showVisits = false;
   isSettingsVisible = true;
+  private subscription: Subscription;
 
-  constructor(private engine: EngineService) {}
-
-  async ngOnInit() {
-    await this.engine.init();
-    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+  constructor(private engine: EngineService, private ngZone: NgZone) {
+    this.subscription = analysisResult$.subscribe(result => {
+      this.ngZone.run(() => {
+        console.log("Hit")
+        this.analysisResult.set(result);
+      });
+    });
   }
 
-  makeMove(big: number, row: number, col: number): void {
+  async ngOnInit() {
+    this.engine.init()
+      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  makeMove(big: number, row: number, col: number, aiMove: boolean): void {
     if (
       this.board[big][row][col] === '' &&
       (this.activeBoard === null || this.activeBoard === big)
+      && !this.isBoardCompleted(big)
     ) {
       this.board[big][row][col] = this.currentPlayer;
-      this.lastMove = { big, row, col };
+      this.lastMove = {big, row, col};
       this.activeBoard = row * 3 + col;
+      if (this.isBoardCompleted(this.activeBoard)) {
+        this.activeBoard = null;
+      }
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      this.updateAnalysisResult(this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime));
-
-      // if (this.currentPlayer === 'O') {
-      //   setTimeout(() => {
-      //     const move = this.engine.getRandomMove(this.board, this.activeBoard);
-      //     if (move) this.makeMove(move.big, move.row, move.col);
-      //   }, 500);
-      // }
+      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+      if (this.playVsAi && !aiMove) {
+        setTimeout(() => {
+          const move = this.engine.getBestMove(this.board, this.activeBoard);
+          if (move) this.makeMove(move.big, move.row, move.col, true);
+        }, this.thinkingTime);
+      }
     }
   }
 
@@ -69,13 +88,9 @@ export class UltimateTicTacToeComponent implements OnInit {
     return false;
   }
 
-  updateAnalysisResult(result: AnalysisResult): void {
-    this.analysisResult = result;
-  }
-
   isBestMove(big: number, row: number, col: number): boolean {
     const move = this.getMove(big, row, col);
-    return move?.visits === this.analysisResult?.maxVisits;
+    return move?.visits === this.analysisResult()?.maxVisits;
   }
 
   getCellContent(big: number, row: number, col: number): string {
@@ -83,7 +98,7 @@ export class UltimateTicTacToeComponent implements OnInit {
   }
 
   getMove(big: number, row: number, col: number): Move | null {
-    return this.analysisResult?.moves?.[big]?.[row]?.[col] ?? null;
+    return this.analysisResult()?.moves?.[big]?.[row]?.[col] ?? null;
   }
 
   toggleSettings() {
@@ -95,12 +110,12 @@ export class UltimateTicTacToeComponent implements OnInit {
     this.activeBoard = null;
     this.currentPlayer = 'X';
     this.lastMove = null;
-    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
   }
 
   createEmptyBoard() {
-    return Array.from({ length: 9 }, () =>
-      Array.from({ length: 3 }, () => Array(3).fill(''))
+    return Array.from({length: 9}, () =>
+      Array.from({length: 3}, () => Array(3).fill(''))
     );
   }
 }
