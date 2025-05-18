@@ -10,6 +10,12 @@
 .layout-wrapper {
   display: flex;
   gap: 32px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;   // stack vertically
+    align-items: center;      // center horizontally
+    justify-content: center;  // center vertically if height allows
+  }
 }
 
 .board-wrapper {
@@ -28,6 +34,19 @@
   font-size: 14px;
   flex-shrink: 0;
   transition: transform 0.3s ease, width 0.3s ease, padding 0.3s ease;
+
+  @media (max-width: 768px) {
+    width: 90vw; /* Make it take full width of parent */
+    height: 90vw; /* Make it take full height of parent */
+  }
+
+  &.collapsed {
+    transform: translateX(100%);
+    @media (max-width: 768px) {
+      transform: translateY(-100%);
+    }
+  }
+
 }
 
 /* Close button styling */
@@ -109,6 +128,12 @@
 
   margin-left: auto;
   margin-right: auto;
+
+  @media (max-width: 768px) {
+    width: 90vw; /* Make it take full width of parent */
+    height: 90vw; /* Make it take full height of parent */
+  }
+
 }
 
 /* Style for each mini-board container */
@@ -117,6 +142,7 @@
   background-color: white; /* White background */
   border: 1px solid black; /* Black borders for mini-boards */
   display: grid;
+
 }
 
 /* Style for completed mini-boards */
@@ -129,6 +155,8 @@
   flex-direction: column; /* Arrange rows vertically */
   width: 100%; /* Make it take full width of parent */
   height: 100%; /* Make it take full height of parent */
+
+
 }
 
 /* Style for each row in the mini-board */
