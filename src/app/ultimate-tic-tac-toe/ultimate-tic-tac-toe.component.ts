@@ -27,6 +27,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   thinkingTime = 100;
   showEval = true;
   playVsAi = false;
+  aggresiveOptimiziations = false;
   showVisits = false;
   isSettingsVisible = true;
   private subscription: Subscription;
@@ -41,7 +42,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.engine.init()
-      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime));
+      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations));
   }
 
   ngOnDestroy() {
@@ -61,7 +62,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
         this.activeBoard = null;
       }
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
       if (this.playVsAi && !aiMove) {
         setTimeout(() => {
           const move = this.engine.getBestMove(this.board, this.activeBoard);
@@ -125,7 +126,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     this.activeBoard = null;
     this.currentPlayer = 'X';
     this.lastMove = null;
-    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
   }
 
   createEmptyBoard() {

@@ -72,17 +72,22 @@ export class EngineService {
     return bestMove
   }
 
-  async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number):
+  async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number, aggresiveOptimiziations: boolean):
     Promise<void> {
     let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
+    console.log(javaPosition);
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
+    // if (javaPosition.playerToMove == 0) {
+    //   return;
+    // }
     for (let i = 0; i < thinkingTime; i += 100) {
       teavm.instance.exports.analyzePosition(
         javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
         a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
         b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
-        javaPosition.nextBoard, javaPosition.playerToMove, Math.min(100, thinkingTime - i)
+        javaPosition.nextBoard, javaPosition.playerToMove, Math.min(100, thinkingTime - i),
+        aggresiveOptimiziations
       );
       await new Promise(resolve => setTimeout(resolve, 0));
     }
