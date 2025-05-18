@@ -44,14 +44,14 @@ export class EngineService {
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O'): AnalysisResult {
+  analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number): AnalysisResult {
     let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
     let r = teavm.instance.exports.analyzePosition(javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
       a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
       b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
-        javaPosition.nextBoard, javaPosition.playerToMove, 200
+        javaPosition.nextBoard, javaPosition.playerToMove, thinkingTime
     );
     console.log(parseEngineOutput(positionResult));
     return parseEngineOutput(positionResult);

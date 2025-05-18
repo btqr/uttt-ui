@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import {AnalysisResult, Move} from '../engine/analysis-result.model';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
   standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule],
+  imports: [CommonModule, MatGridListModule, MatButtonModule, FormsModule],
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })
@@ -20,12 +21,16 @@ export class UltimateTicTacToeComponent implements OnInit {
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
   analysisResult: AnalysisResult | null = null;
+  thinkingTime = 100;
+  showEval = true;
+  showVisits = false;
+  isSettingsVisible = true;
 
   constructor(private engine: EngineService) {}
 
   async ngOnInit() {
     await this.engine.init();
-    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer);
+    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
   }
 
   makeMove(big: number, row: number, col: number): void {
@@ -37,7 +42,7 @@ export class UltimateTicTacToeComponent implements OnInit {
       this.lastMove = { big, row, col };
       this.activeBoard = row * 3 + col;
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      this.updateAnalysisResult(this.engine.analyze(this.board, this.activeBoard, this.currentPlayer));
+      this.updateAnalysisResult(this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime));
 
       // if (this.currentPlayer === 'O') {
       //   setTimeout(() => {
@@ -79,5 +84,23 @@ export class UltimateTicTacToeComponent implements OnInit {
 
   getMove(big: number, row: number, col: number): Move | null {
     return this.analysisResult?.moves?.[big]?.[row]?.[col] ?? null;
+  }
+
+  toggleSettings() {
+    this.isSettingsVisible = !this.isSettingsVisible;
+  }
+
+  clearBoard() {
+    this.board = this.createEmptyBoard();
+    this.activeBoard = null;
+    this.currentPlayer = 'X';
+    this.lastMove = null;
+    this.analysisResult = this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime);
+  }
+
+  createEmptyBoard() {
+    return Array.from({ length: 9 }, () =>
+      Array.from({ length: 3 }, () => Array(3).fill(''))
+    );
   }
 }

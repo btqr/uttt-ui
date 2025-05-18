@@ -1,34 +1,77 @@
-<div class="ultimate-container">
-  <div class="mat-grid-list">
-    <div
-      class="mini-board-container"
-      *ngFor="let miniBoard of board; let big = index"
-      [class.active]="activeBoard === null || activeBoard === big"
-      [class.completed]="isBoardCompleted(big)"
-    >
-      <div class="mini-board-grid">
-        <div *ngFor="let row of [0,1,2]" class="row">
-          <div class="cell" *ngFor="let col of [0,1,2]"
-               [class.occupied-o]="getCellContent(big, row, col) == 'O'"
-               [class.occupied-x]="getCellContent(big, row, col) == 'X'"
-               [class.active-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big)"
-               (click)="makeMove(big, row, col)"
-          >
-            {{ getCellContent(big, row, col) }}
-            <ng-container *ngIf="getMove(big, row, col) as move">
-              <div class="engine-data"
-                   [class.best]="isBestMove(big, row, col)"
-                   [class.bad] = "move.score < (analysisResult?.evalThreshold ?? -10)">
-                <small>
-<!--                  <span class="visits">V: {{ move.visits }}</span><br>-->
-                  <span class="eval">{{ move.score | number:'1.2-2' }}</span>
-                </small>
-              </div>
-            </ng-container>
+<div class="page-wrapper">
 
+  <div class="layout-wrapper">
+    <div class="board-wrapper">
+      <button
+        class="show-btn"
+        *ngIf="!isSettingsVisible"
+        (click)="toggleSettings()"
+        aria-label="Show settings"
+      >
+        ⚙️
+      </button>
+
+      <div class="ultimate-container">
+        <div class="mat-grid-list">
+          <div
+            class="mini-board-container"
+            *ngFor="let miniBoard of board; let big = index"
+            [class.active]="activeBoard === null || activeBoard === big"
+            [class.completed]="isBoardCompleted(big)"
+          >
+            <div class="mini-board-grid">
+              <div *ngFor="let row of [0,1,2]" class="row">
+                <div class="cell" *ngFor="let col of [0,1,2]"
+                     [class.occupied-o]="getCellContent(big, row, col) == 'O'"
+                     [class.occupied-x]="getCellContent(big, row, col) == 'X'"
+                     [class.active-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big)"
+                     (click)="makeMove(big, row, col)"
+                >
+                  {{ getCellContent(big, row, col) }}
+                  <ng-container *ngIf="getMove(big, row, col) as move">
+                    <div class="engine-data"
+                         [class.best]="isBestMove(big, row, col)"
+                         [class.bad]="move.score < (analysisResult?.evalThreshold ?? -10)">
+                      <small>
+                        <span class="eval" *ngIf="showEval"> {{ move.score | number:'1.2-2' }}</span><br>
+                        <span class="visits" *ngIf="showVisits"> {{ move.visits }}</span>
+                      </small>
+                    </div>
+                  </ng-container>
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- RIGHT: SETTINGS PANEL -->
+    <div class="settings-panel" [class.collapsed]="!isSettingsVisible">
+      <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">
+        <!-- You can use × (times) or a hamburger icon -->
+        &times;
+      </button>
+      <h3>Engine Settings</h3>
+
+      <label>
+        Thinking Time (ms):
+        <input type="number" [(ngModel)]="thinkingTime" min="100" step="100">
+      </label>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="showEval"> Show Eval
+      </label>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="showVisits"> Show Visits
+      </label>
+
+      <button (click)="clearBoard()" class="clear-btn" aria-label="Clear board">
+        Clear Board
+      </button>
+    </div>
+
   </div>
 </div>
