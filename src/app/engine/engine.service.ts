@@ -92,6 +92,7 @@ export class EngineService {
 
 function returnInfo(result : any) {
   analysisResult$.next(parseEngineOutput(readTeaVMString(result)));
+  console.log(readTeaVMString(result))
 }
 
 function readTeaVMString(ptr: any) {
@@ -198,9 +199,9 @@ function parseEngineOutput(input: string): AnalysisResult {
     }
 
     const big = Math.floor(index / 9);
-    const small = index % 9;
-    const row = Math.floor(small / 3);
-    const col = small % 3;
+    const field = index % 9;
+    const row = Math.floor(field / 3);
+    const col = field % 3;
 
     moves[big][row][col] = { visits, score };
   }
