@@ -335,6 +335,14 @@
   pointer-events: none;
   z-index: 10;
   text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    font-size: clamp(10rem, 4vw, 16rem);
+  }
+
+  @media (max-width: 420px) {
+    font-size: clamp(8rem, 4vw, 10rem);
+  }
 }
 
 /* Color for X */
