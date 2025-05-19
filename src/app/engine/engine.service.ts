@@ -25,6 +25,7 @@ export class EngineService {
       }
     });
     teavm.main();
+    // teavm.exports.test();
     console.log('TeaVM loaded');
   }
 
@@ -75,12 +76,8 @@ export class EngineService {
   async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number, aggresiveOptimiziations: boolean):
     Promise<void> {
     let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
-    console.log(javaPosition);
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
-    // if (javaPosition.playerToMove == 0) {
-    //   return;
-    // }
     for (let i = 0; i < thinkingTime; i += 100) {
       teavm.instance.exports.analyzePosition(
         javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
@@ -97,7 +94,7 @@ export class EngineService {
 
 function returnInfo(result : any) {
   analysisResult$.next(parseEngineOutput(readTeaVMString(result)));
-  console.log(readTeaVMString(result))
+  // console.log(readTeaVMString(result))
 }
 
 function readTeaVMString(ptr: any) {
@@ -198,7 +195,9 @@ function parseEngineOutput(input: string): AnalysisResult {
     if (visits) {
       maxVisits = Math.max(visits, maxVisits);
     }
-    const score = parseFloat(scoreStr);
+    let score = parseFloat(scoreStr);
+    score = Math.max(score, -1);
+    score = Math.min(score, 1);
     if (score) {
       allEvals.push(score);
     }
