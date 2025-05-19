@@ -126,6 +126,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     this.activeBoard = null;
     this.currentPlayer = 'X';
     this.lastMove = null;
+    this.engine.init();
     this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
   }
 
