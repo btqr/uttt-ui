@@ -17,15 +17,7 @@ export class EngineService {
   async init(): Promise<void> {
 
 
-    teavm = await TeaVM.wasm.load('assets/classes.wasm', {
-      installImports: (imports: any, controller: any) => {
-        imports.env = {
-          returnInfo
-        };
-      }
-    });
-    teavm.main();
-    // teavm.exports.test();
+    teavm = await TeaVM.wasmGC.load('assets/classes.wasm', {});
     console.log('TeaVM loaded');
   }
 
@@ -79,7 +71,7 @@ export class EngineService {
     let a = javaPosition.smallBoardsCircle;
     let b = javaPosition.smallBoardsCross;
     for (let i = 0; i < thinkingTime; i += 100) {
-      teavm.instance.exports.analyzePosition(
+      teavm.exports.analyzePosition(
         javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
         a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
         b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
@@ -92,25 +84,9 @@ export class EngineService {
 
 }
 
-function returnInfo(result : any) {
-  analysisResult$.next(parseEngineOutput(readTeaVMString(result)));
-  // console.log(readTeaVMString(result))
+(window as any).returnInfo = function(result : any) {
+  analysisResult$.next(parseEngineOutput(result));
 }
-
-function readTeaVMString(ptr: any) {
-  const memory = teavm.instance.exports.memory;
-  const data = new DataView(memory.buffer);
-  const offset = ptr + 12;
-  const length = data.getInt32(ptr + 8, true);
-
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    const code = data.getUint16(offset + i * 2, true);
-    result += String.fromCharCode(code);
-  }
-  return result;
-}
-
 // Helper to convert 3x3 to bitboard
 function convertSmallBoard(board: string[][], player: 'X' | 'O'): number {
   let bits = 0;

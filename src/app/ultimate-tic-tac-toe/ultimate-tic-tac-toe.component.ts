@@ -24,7 +24,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
   analysisResult = signal<AnalysisResult | null>(null);
-  thinkingTime = 100;
+  thinkingTime = 500;
   showEval = true;
   playVsAi = false;
   aggresiveOptimiziations = false;
@@ -126,7 +126,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     this.activeBoard = null;
     this.currentPlayer = 'X';
     this.lastMove = null;
-    this.engine.init();
+    // this.engine.init();
     this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
   }
 
