@@ -94,7 +94,6 @@ export class EngineService {
       let b = javaPosition.smallBoardsCross;
       for (let i = 0; i < thinkingTime; i += 100) {
         if (signal.aborted) {
-          console.log("Analysis aborted early");
           return;
         }
         teavm.exports.analyzePosition(
