@@ -28,8 +28,9 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   showEval = true;
   playVsAi = false;
   aggresiveOptimiziations = false;
-  showVisits = false;
+  showVisits = true;
   isSettingsVisible = true;
+
   private subscription: Subscription;
 
   constructor(private engine: EngineService, private ngZone: NgZone) {

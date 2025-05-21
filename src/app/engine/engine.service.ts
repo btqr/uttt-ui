@@ -11,6 +11,9 @@ export let analysisResult$ = new BehaviorSubject<AnalysisResult | null>(null);
 @Injectable({providedIn: 'root'})
 export class EngineService {
 
+  currentAnalysisAbortController: AbortController | null = null;
+  analysisLock: Promise<void> = Promise.resolve(); // A resolved promise (initially unlocked)
+
   constructor() {
   }
 
@@ -31,7 +34,7 @@ export class EngineService {
       if (activeBoard === null || big === activeBoard) {
         mini.forEach((rowArr, row) => {
           rowArr.forEach((cell, col) => {
-            if (cell === '') options.push({ big, row, col });
+            if (cell === '') options.push({big, row, col});
           });
         });
       }
@@ -56,7 +59,7 @@ export class EngineService {
           const move = analysisResult$.getValue()?.moves[big][row][col];
           if (move && move.visits > maxVisits) {
             maxVisits = move.visits;
-            bestMove = { big, row, col };
+            bestMove = {big, row, col};
           }
         }
       }
@@ -67,21 +70,49 @@ export class EngineService {
 
   async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O', thinkingTime: number, aggresiveOptimiziations: boolean):
     Promise<void> {
-    let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
-    let a = javaPosition.smallBoardsCircle;
-    let b = javaPosition.smallBoardsCross;
-    for (let i = 0; i < thinkingTime; i += 100) {
-      teavm.exports.analyzePosition(
-        javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
-        a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
-        b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
-        javaPosition.nextBoard, javaPosition.playerToMove, Math.min(100, thinkingTime - i),
-        (thinkingTime - i) > thinkingTime/2, aggresiveOptimiziations
-      );
-      await new Promise(resolve => setTimeout(resolve, 0));
+    // Cancel any ongoing analysis
+    const prevAbort = this.currentAnalysisAbortController;
+    const prevLock = this.analysisLock;
+
+    if (prevAbort) {
+      prevAbort.abort(); // Abort the previous one
+    }
+
+    const myAbortController = new AbortController();
+    this.currentAnalysisAbortController = myAbortController;
+
+    // Wait for previous task to finish
+    await prevLock;
+
+    // Lock the current task
+    let unlock!: () => void;
+    this.analysisLock = new Promise<void>(resolve => unlock = resolve as () => void);
+    try {
+      const signal = myAbortController.signal;
+      let javaPosition = convertToJavaPosition(board, activeBoard, currentPlayer);
+      let a = javaPosition.smallBoardsCircle;
+      let b = javaPosition.smallBoardsCross;
+      for (let i = 0; i < thinkingTime; i += 100) {
+        if (signal.aborted) {
+          console.log("Analysis aborted early");
+          return;
+        }
+        teavm.exports.analyzePosition(
+          javaPosition.bigBoardCircle, javaPosition.bigBoardCross,
+          a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
+          b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8],
+          javaPosition.nextBoard, javaPosition.playerToMove, Math.min(100, thinkingTime - i),
+          (thinkingTime - i) > thinkingTime / 2, aggresiveOptimiziations
+        );
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+    } finally {
+      unlock();
+      if (this.currentAnalysisAbortController === myAbortController) {
+        this.currentAnalysisAbortController = null;
+      }
     }
   }
-
 }
 
 (window as any).returnInfo = function(result : any) {

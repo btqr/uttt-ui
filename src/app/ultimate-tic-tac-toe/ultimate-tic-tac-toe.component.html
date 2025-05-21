@@ -34,6 +34,7 @@
                      [class.occupied-o]="getCellContent(big, row, col) == 'O'"
                      [class.occupied-x]="getCellContent(big, row, col) == 'X'"
                      [class.active-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
+                     [class.disabled-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
                      [class.big-win]="getMiniBoardWinner(big) === 'X' || getMiniBoardWinner(big) === 'O'"
                      (click)="makeMove(big, row, col, false)"
                 >
