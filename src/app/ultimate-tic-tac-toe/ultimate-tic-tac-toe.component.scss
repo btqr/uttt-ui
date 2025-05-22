@@ -22,6 +22,7 @@
   width: 650px;
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 .settings-panel {
@@ -192,9 +193,7 @@
 
 /* Optional styles for specific states */
 .cell.disabled {
-  background-color: #f0f0f0;
-  color: #aaa;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .cell.occupied-x {
@@ -354,3 +353,5 @@
 .winner-o {
   color: #dc3545;
 }
+
+

@@ -33,8 +33,8 @@
                 <div class="cell" *ngFor="let col of [0,1,2]"
                      [class.occupied-o]="getCellContent(big, row, col) == 'O'"
                      [class.occupied-x]="getCellContent(big, row, col) == 'X'"
-                     [class.active-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
-                     [class.disabled-move]="this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
+                     [class.disabled]="!(getWinnerFromBoard() == null && this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big))"
+                     [class.active-move]="getWinnerFromBoard() == null && this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
                      [class.big-win]="getMiniBoardWinner(big) === 'X' || getMiniBoardWinner(big) === 'O'"
                      (click)="makeMove(big, row, col, false)"
                 >
@@ -54,10 +54,17 @@
               </div>
             </div>
           </div>
+
         </div>
+        <app-game-over-dialog [winner]="winner$ | async" (restart)="handleRestart()"></app-game-over-dialog>
       </div>
 
-    </div>
+
+
+
+
+
+  </div>
 
     <!-- RIGHT: SETTINGS PANEL -->
     <div class="settings-panel" [class.collapsed]="!isSettingsVisible">
@@ -84,14 +91,13 @@
         <input type="checkbox" [(ngModel)]="playVsAi"> AI moves automatically
       </label>
 
-<!--      <label>-->
-<!--        <input type="checkbox" [(ngModel)]="aggresiveOptimiziations"> Aggressive optimizations-->
-<!--      </label>-->
+      <!--      <label>-->
+      <!--        <input type="checkbox" [(ngModel)]="aggresiveOptimiziations"> Aggressive optimizations-->
+      <!--      </label>-->
 
       <button (click)="clearBoard()" class="clear-btn" aria-label="Clear board">
         Clear Board
       </button>
     </div>
 
-  </div>
 </div>

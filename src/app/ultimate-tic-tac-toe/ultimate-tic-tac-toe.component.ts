@@ -1,16 +1,18 @@
 import {ChangeDetectorRef, Component, OnInit, OnDestroy, NgZone, signal} from '@angular/core';
-import {analysisResult$, EngineService} from '../engine/engine.service';
+import {analysisResult$, convertBigBoards, EngineService} from '../engine/engine.service';
 import {CommonModule} from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
 import {AnalysisResult, Move} from '../engine/analysis-result.model';
 import {FormsModule} from '@angular/forms';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {GameOverDialogComponent} from './game-over-popup/game-over-dialog.component';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
   standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule, FormsModule],
+  imports: [CommonModule, MatDialogModule, MatGridListModule, MatButtonModule, FormsModule, GameOverDialogComponent],
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })
@@ -31,9 +33,11 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   showVisits = true;
   isSettingsVisible = true;
 
+  winner$ = new BehaviorSubject<'O' | 'X' | 'Draw' | null>(null);
+
   private subscription: Subscription;
 
-  constructor(private engine: EngineService, private ngZone: NgZone) {
+  constructor(private engine: EngineService, private ngZone: NgZone, private dialog: MatDialog) {
     this.subscription = analysisResult$.subscribe(result => {
       this.ngZone.run(() => {
         this.analysisResult.set(result);
@@ -55,6 +59,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
       this.board[big][row][col] === '' &&
       (this.activeBoard === null || this.activeBoard === big)
       && !this.isBoardCompleted(big)
+      && this.getWinnerFromBoard() == null
     ) {
       this.board[big][row][col] = this.currentPlayer;
       this.lastMove = {big, row, col};
@@ -63,13 +68,16 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
         this.activeBoard = null;
       }
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
-      if (this.playVsAi && !aiMove) {
-        setTimeout(() => {
-          const move = this.engine.getBestMove(this.board, this.activeBoard);
-          if (move) this.makeMove(move.big, move.row, move.col, true);
-        }, this.thinkingTime);
+      if (this.getWinnerFromBoard() == null) {
+        this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
+        if (this.playVsAi && !aiMove) {
+          setTimeout(() => {
+            const move = this.engine.getBestMove(this.board, this.activeBoard);
+            if (move) this.makeMove(move.big, move.row, move.col, true);
+          }, this.thinkingTime);
+        }
       }
+      this.winner$.next(this.getWinnerFromBoard());
     }
   }
 
@@ -137,4 +145,13 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     );
   }
 
+  getWinnerFromBoard(): "X" | "O" | "Draw" | null {
+    return this.engine.getWinner(this.board);
+  }
+
+  handleRestart() {
+    this.clearBoard();
+  }
 }
+
+

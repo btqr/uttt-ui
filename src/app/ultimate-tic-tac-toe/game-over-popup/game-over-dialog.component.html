@@ -1,0 +1,11 @@
+<div class="board-overlay-dialog" *ngIf="winner && isVisible">
+  <div class="popup-content">
+    <button class="close-icon" (click)="onClose()">×</button>
+    <h2>Game Over</h2>
+    <p class="winner" *ngIf="winner == 'X' || winner == 'O'">🎉 Winner: <strong>{{ winner }}</strong></p>
+    <p class="draw" *ngIf="winner == 'Draw'">It's a draw!</p>
+    <div class="button-group">
+      <button class="material-btn primary" (click)="onReset()">New game</button>
+    </div>
+  </div>
+</div>

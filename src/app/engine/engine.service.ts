@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AppComponent} from '../app.component';
 import {JavaPosition} from './java-position.model';
 import {AnalysisResult, Move} from './analysis-result.model';
 import {BehaviorSubject, interval, map, Observable} from 'rxjs';
 
 declare const TeaVM: any;
-let teavm : any;
+let teavm: any;
 export let analysisResult$ = new BehaviorSubject<AnalysisResult | null>(null);
 
 @Injectable({providedIn: 'root'})
@@ -18,29 +18,8 @@ export class EngineService {
   }
 
   async init(): Promise<void> {
-
-
     teavm = await TeaVM.wasmGC.load('assets/classes.wasm', {});
     console.log('TeaVM loaded');
-  }
-
-  getRandomMove(board: string[][][], activeBoard: number | null): {
-    big: number;
-    row: number;
-    col: number;
-  } | null {
-    const options: { big: number; row: number; col: number }[] = [];
-    board.forEach((mini, big) => {
-      if (activeBoard === null || big === activeBoard) {
-        mini.forEach((rowArr, row) => {
-          rowArr.forEach((cell, col) => {
-            if (cell === '') options.push({big, row, col});
-          });
-        });
-      }
-    });
-    if (options.length === 0) return null;
-    return options[Math.floor(Math.random() * options.length)];
   }
 
   getBestMove(board: string[][][], activeBoard: number | null): {
@@ -112,11 +91,65 @@ export class EngineService {
       }
     }
   }
+
+  getWinner(
+    board: string[][][]
+  ): 'X' | 'O' | 'Draw' | null {
+    const { bigBoardCircle, bigBoardCross } = convertBigBoards(board);
+    const finishedBoardsMask = this.getFinishedBoardsMask(board);
+
+    // Check for big board wins
+    for (const mask of WIN_MASKS) {
+      if ((bigBoardCircle & mask) === mask) return 'O';
+      if ((bigBoardCross & mask) === mask) return 'X';
+    }
+
+    // Check if all boards are finished
+    if (finishedBoardsMask === 0b111111111) {
+      const circleWins = countBits(bigBoardCircle);
+      const crossWins = countBits(bigBoardCross);
+
+      if (circleWins > crossWins) return 'O';
+      if (crossWins > circleWins) return 'X';
+      return 'Draw';
+    }
+    return null; // Game still in progress
+  }
+
+  getFinishedBoardsMask(board: string[][][]): number {
+    let mask = 0;
+    for (let i = 0; i < 9; i++) {
+      if (this.isBoardFinished(board[i])) {
+        mask |= (1 << i);
+      }
+    }
+    return mask;
+  }
+
+  isBoardFinished(smallBoard: string[][]): boolean {
+    const bitsCircle = convertSmallBoard(smallBoard, 'O');
+    const bitsCross = convertSmallBoard(smallBoard, 'X');
+
+    if (isWin(bitsCircle) || isWin(bitsCross)) {
+      return true;
+    }
+
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (smallBoard[row][col] === '') {
+          return false; // board not finished yet
+        }
+      }
+    }
+    return true; // drawn board (full, no winner)
+  }
+
 }
 
-(window as any).returnInfo = function(result : any) {
+(window as any).returnInfo = function (result: any) {
   analysisResult$.next(parseEngineOutput(result));
 }
+
 // Helper to convert 3x3 to bitboard
 function convertSmallBoard(board: string[][], player: 'X' | 'O'): number {
   let bits = 0;
@@ -147,6 +180,15 @@ const WIN_MASKS = [
 // Check if bitboard is a win
 function isWin(bits: number): boolean {
   return WIN_MASKS.some(mask => (bits & mask) === mask);
+}
+
+function countBits(bits: number): number {
+  let count = 0;
+  while (bits) {
+    bits &= bits - 1;
+    count++;
+  }
+  return count;
 }
 
 function convertToJavaPosition(
@@ -184,9 +226,9 @@ function convertToJavaPosition(
 
 function parseEngineOutput(input: string): AnalysisResult {
   // Initialize empty structure
-  const moves: (Move | null)[][][] = Array.from({ length: 9 }, () =>
-    Array.from({ length: 3 }, () =>
-      Array.from({ length: 3 }, () => null as Move | null)
+  const moves: (Move | null)[][][] = Array.from({length: 9}, () =>
+    Array.from({length: 3}, () =>
+      Array.from({length: 3}, () => null as Move | null)
     )
   );
   const lines = input.trim().split('\n');
@@ -213,12 +255,29 @@ function parseEngineOutput(input: string): AnalysisResult {
     const row = Math.floor(field / 3);
     const col = field % 3;
 
-    moves[big][row][col] = { visits, score };
+    moves[big][row][col] = {visits, score};
   }
   allEvals.sort((a, b) => b - a);
   const index = Math.min(9, allEvals.length - 1);
-  let threshold : number | null = allEvals.length > 0 ? allEvals[index] : 0;
+  let threshold: number | null = allEvals.length > 0 ? allEvals[index] : 0;
   // let threshold = 0;
 
-  return { moves, maxVisits: maxVisits, evalThreshold: threshold };
+  return {moves, maxVisits: maxVisits, evalThreshold: threshold};
+}
+
+export function convertBigBoards(board: string[][][]): { bigBoardCircle: number; bigBoardCross: number } {
+  let bigBoardCircle = 0;
+  let bigBoardCross = 0;
+
+  for (let big = 0; big < 9; big++) {
+    const smallBoard = board[big];
+
+    const bitsCircle = convertSmallBoard(smallBoard, 'O');
+    const bitsCross = convertSmallBoard(smallBoard, 'X');
+
+    if (isWin(bitsCircle)) bigBoardCircle |= (1 << big);
+    if (isWin(bitsCross)) bigBoardCross |= (1 << big);
+  }
+
+  return {bigBoardCircle, bigBoardCross};
 }

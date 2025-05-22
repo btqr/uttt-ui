@@ -31,11 +31,24 @@ app-footer {
 .page-wrapper {
   max-height: 100%;
   max-width: 100%;
-  overflow: hidden; /* ensures no scrollbars from child overflow */
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+.layout-wrapper.popup-active .board-wrapper {
+  pointer-events: none; /* disable board clicks */
+}
+
+.layout-wrapper.popup-active .settings-panel {
+  pointer-events: auto; /* allow settings clicks */
+  z-index: 1100; /* higher than overlay */
+}
+
+.layout-wrapper.popup-active app-game-over-dialog {
+  pointer-events: auto; /* allow popup clicks */
+  z-index: 1200;
 }
