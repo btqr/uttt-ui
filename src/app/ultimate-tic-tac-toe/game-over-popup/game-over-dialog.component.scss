@@ -10,6 +10,7 @@
   background-color: rgba(0, 0, 0, 0.5); // dark transparent overlay
   z-index: 9999;
 
+
   .popup-content {
     position: relative;
     //background-color: #fff;
@@ -49,7 +50,10 @@
       display: flex;
       justify-content: center;
     }
+
   }
+
+
 }
 
 .material-btn {
@@ -110,3 +114,4 @@
     opacity: 1;
   }
 }
+
