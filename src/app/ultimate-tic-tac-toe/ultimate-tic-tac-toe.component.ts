@@ -26,12 +26,14 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
   analysisResult = signal<AnalysisResult | null>(null);
-  thinkingTime = 500;
-  showEval = true;
-  playVsAi = false;
-  aggresiveOptimiziations = false;
-  showVisits = true;
-  isSettingsVisible = true;
+  settings = {
+    thinkingTime: 500,
+    showEval: true,
+    playVsAi: false,
+    showVisits: true,
+    isSettingsVisible: true
+  }
+
 
   winner$ = new BehaviorSubject<'O' | 'X' | 'Draw' | null>(null);
 
@@ -47,7 +49,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.engine.init()
-      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations));
+      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime));
   }
 
   ngOnDestroy() {
@@ -69,12 +71,12 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
       }
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
       if (this.getWinnerFromBoard() == null) {
-        this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
-        if (this.playVsAi && !aiMove) {
+        this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime);
+        if (this.settings.playVsAi && !aiMove) {
           setTimeout(() => {
             const move = this.engine.getBestMove(this.board, this.activeBoard);
             if (move) this.makeMove(move.big, move.row, move.col, true);
-          }, this.thinkingTime);
+          }, this.settings.thinkingTime);
         }
       }
       this.winner$.next(this.getWinnerFromBoard());
@@ -127,7 +129,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   }
 
   toggleSettings() {
-    this.isSettingsVisible = !this.isSettingsVisible;
+    this.settings.isSettingsVisible = !this.settings.isSettingsVisible;
   }
 
   clearBoard() {
@@ -136,7 +138,7 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     this.currentPlayer = 'X';
     this.lastMove = null;
     // this.engine.init();
-    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.thinkingTime, this.aggresiveOptimiziations);
+    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime);
   }
 
   createEmptyBoard() {

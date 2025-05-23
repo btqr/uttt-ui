@@ -4,7 +4,7 @@
     <div class="board-wrapper">
       <button
         class="show-btn"
-        *ngIf="!isSettingsVisible"
+        *ngIf="!settings.isSettingsVisible"
         (click)="toggleSettings()"
         aria-label="Show settings"
       >
@@ -44,8 +44,8 @@
                          [class.best]="isBestMove(big, row, col)"
                          [class.bad]="move.score < (analysisResult()?.evalThreshold ?? -10)">
                       <small>
-                        <span class="eval" *ngIf="showEval"> {{ move.score | number:'1.2-2' }}</span><br>
-                        <span class="visits" *ngIf="showVisits"> {{ move.visits }}</span>
+                        <span class="eval" *ngIf="settings.showEval"> {{ move.score | number:'1.2-2' }}</span><br>
+                        <span class="visits" *ngIf="settings.showVisits"> {{ move.visits }}</span>
                       </small>
                     </div>
                   </ng-container>
@@ -67,7 +67,7 @@
   </div>
 
     <!-- RIGHT: SETTINGS PANEL -->
-    <div class="settings-panel" [class.collapsed]="!isSettingsVisible">
+    <div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
       <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">
         <!-- You can use × (times) or a hamburger icon -->
         &times;
@@ -76,24 +76,20 @@
 
       <label>
         Thinking Time (ms):
-        <input type="number" [(ngModel)]="thinkingTime" min="100" step="100" >
+        <input type="number" [(ngModel)]="settings.thinkingTime" min="100" step="100" >
       </label>
 
       <label>
-        <input type="checkbox" [(ngModel)]="showEval"> Show Eval
+        <input type="checkbox" [(ngModel)]="settings.showEval"> Show Eval
       </label>
 
       <label>
-        <input type="checkbox" [(ngModel)]="showVisits"> Show Visits
+        <input type="checkbox" [(ngModel)]="settings.showVisits"> Show Visits
       </label>
 
       <label>
-        <input type="checkbox" [(ngModel)]="playVsAi"> AI moves automatically
+        <input type="checkbox" [(ngModel)]="settings.playVsAi"> AI moves automatically
       </label>
-
-      <!--      <label>-->
-      <!--        <input type="checkbox" [(ngModel)]="aggresiveOptimiziations"> Aggressive optimizations-->
-      <!--      </label>-->
 
       <button (click)="clearBoard()" class="clear-btn" aria-label="Clear board">
         Clear Board
