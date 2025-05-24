@@ -96,11 +96,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid lightgray;
+  border: 1px solid transparent; /* default border thickness */
   font-size: 2rem;
   font-weight: bold;
   color: #333;
   cursor: pointer;
+
+
 
   width: 100%;
   aspect-ratio: 1;
@@ -113,6 +115,22 @@
 
   white-space: nowrap;
   line-height: 1;
+}
+
+.cell:not(.last-move-red):not(.last-move-blue) {
+  border-color: lightgray; /* normal border color */
+}
+
+.cell.last-move-red {
+  border-color: #e57373;
+  background-color: #fff5f5;
+  box-shadow: 0 0 6px rgba(229, 115, 115, 0.3);
+}
+
+.cell.last-move-blue {
+  border-color: #5c6bc0;
+  background-color: #f8f9ff;
+  box-shadow: 0 0 6px rgba(92, 107, 192, 0.3);
 }
 
 /* Optional styles for specific states */
