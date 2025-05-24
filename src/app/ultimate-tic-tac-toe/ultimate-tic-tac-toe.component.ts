@@ -8,38 +8,33 @@ import {FormsModule} from '@angular/forms';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {GameOverDialogComponent} from './game-over-popup/game-over-dialog.component';
+import {Settings} from '../services/settings.model';
+import {SettingsComponent} from './right-side-panel/right-side-panel.component';
+import {SettingsService} from '../services/settings-service';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatGridListModule, MatButtonModule, FormsModule, GameOverDialogComponent],
+  imports: [CommonModule, MatDialogModule, MatGridListModule, MatButtonModule, FormsModule, GameOverDialogComponent, SettingsComponent],
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })
 
 
 export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
-  board: string[][][] = Array.from({length: 9}, () =>
-    Array.from({length: 3}, () => Array(3).fill(''))
-  );
+  board: string[][][] = this.createEmptyBoard();
   currentPlayer: 'X' | 'O' = 'X';
   activeBoard: number | null = null; // 0-8 or null for any
   lastMove: { big: number; row: number; col: number } | null = null;
   analysisResult = signal<AnalysisResult | null>(null);
-  settings = {
-    thinkingTime: 500,
-    showEval: true,
-    playVsAi: false,
-    showVisits: true,
-    isSettingsVisible: true
-  }
-
+  settings!: Settings;
 
   winner$ = new BehaviorSubject<'O' | 'X' | 'Draw' | null>(null);
 
   private subscription: Subscription;
 
-  constructor(private engine: EngineService, private ngZone: NgZone, private dialog: MatDialog) {
+  constructor(private engine: EngineService, private settingsService: SettingsService,
+              private ngZone: NgZone, private dialog: MatDialog) {
     this.subscription = analysisResult$.subscribe(result => {
       this.ngZone.run(() => {
         this.analysisResult.set(result);
@@ -48,6 +43,9 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.settingsService.settings$.subscribe(settings => {
+      this.settings = { ...settings };
+    });
     this.engine.init()
       .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime));
   }
@@ -128,10 +126,6 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
     return this.analysisResult()?.moves?.[big]?.[row]?.[col] ?? null;
   }
 
-  toggleSettings() {
-    this.settings.isSettingsVisible = !this.settings.isSettingsVisible;
-  }
-
   clearBoard() {
     this.board = this.createEmptyBoard();
     this.activeBoard = null;
@@ -153,6 +147,14 @@ export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
 
   handleRestart() {
     this.clearBoard();
+  }
+
+  onSettingsChange(settings: Settings) {
+    this.settings = settings;
+  }
+
+  toggleSettings() {
+    this.settingsService.toggle();
   }
 }
 

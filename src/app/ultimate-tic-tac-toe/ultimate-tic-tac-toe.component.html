@@ -7,8 +7,7 @@
         *ngIf="!settings.isSettingsVisible"
         (click)="toggleSettings()"
         aria-label="Show settings"
-      >
-        ⚙️
+      >⚙️
       </button>
 
 
@@ -58,42 +57,8 @@
         </div>
         <app-game-over-dialog [winner]="winner$ | async" (restart)="handleRestart()"></app-game-over-dialog>
       </div>
-
-
-
-
-
-
   </div>
 
-    <!-- RIGHT: SETTINGS PANEL -->
-    <div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
-      <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">
-        <!-- You can use × (times) or a hamburger icon -->
-        &times;
-      </button>
-      <h3>Engine Settings</h3>
-
-      <label>
-        Thinking Time (ms):
-        <input type="number" [(ngModel)]="settings.thinkingTime" min="100" step="100" >
-      </label>
-
-      <label>
-        <input type="checkbox" [(ngModel)]="settings.showEval"> Show Eval
-      </label>
-
-      <label>
-        <input type="checkbox" [(ngModel)]="settings.showVisits"> Show Visits
-      </label>
-
-      <label>
-        <input type="checkbox" [(ngModel)]="settings.playVsAi"> AI moves automatically
-      </label>
-
-      <button (click)="clearBoard()" class="clear-btn" aria-label="Clear board">
-        Clear Board
-      </button>
-    </div>
+    <right-side-panel (clearBoard) = "clearBoard()"></right-side-panel>
 
 </div>
