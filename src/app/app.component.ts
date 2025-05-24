@@ -4,6 +4,8 @@ import {CommonModule} from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import {FooterComponent} from './footer/footer.component';
+import {FormsModule} from '@angular/forms';
+import {MatSlider, MatSliderModule} from '@angular/material/slider';
 
 declare const TeaVM: any;
 let teavm : any;
@@ -18,7 +20,11 @@ let teavm : any;
     UltimateTicTacToeComponent,
     MatGridListModule,
     MatButtonModule,
-    FooterComponent
+    FooterComponent,
+    FormsModule,
+    CommonModule,
+    MatSliderModule,
+    MatSlider
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

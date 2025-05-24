@@ -4,6 +4,9 @@ import {FormsModule} from '@angular/forms';
 import {SettingsService} from '../../services/settings/settings.service';
 import {CommonModule} from '@angular/common';
 import {GameStateService} from '../../services/game-state/game-state.service';
+import {MatSlider, MatSliderModule} from '@angular/material/slider';
+import {NgxSliderModule} from '@angular-slider/ngx-slider';
+import {NouisliderComponent} from 'ng2-nouislider';
 
 @Component({
   selector: 'right-side-panel',
@@ -11,7 +14,11 @@ import {GameStateService} from '../../services/game-state/game-state.service';
   templateUrl: './right-side-panel.component.html',
   imports: [
     FormsModule,
-    CommonModule
+    CommonModule,
+    MatSliderModule,
+    MatSlider,
+    NgxSliderModule,
+    NouisliderComponent
   ],
   styleUrls: ['./right-side-panel.component.scss']
 })
@@ -34,6 +41,7 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   onSettingsChange(): void {
+    console.log('Thinking time changed:', this.settings.thinkingTime);
     this.settingsService.updateSettings(this.settings);
   }
 

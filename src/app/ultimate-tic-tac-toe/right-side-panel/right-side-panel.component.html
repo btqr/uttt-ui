@@ -35,13 +35,22 @@
   <div *ngIf="activeTab === 'settings'" class="settings-tab tab-content">
     <h3>Engine Settings</h3>
 
-    <label>
-      Thinking Time (ms):
-      <input type="number" [(ngModel)]="settings.thinkingTime" (ngModelChange)="onSettingsChange()" min="100" step="100" />
+    <label for="thinkingTime" style="margin-bottom:-5px; display:block;">
+      Thinking Time (ms): {{settings.thinkingTime}}
     </label>
+    <input
+      id="thinkingTime"
+      type="range"
+      min="100"
+      max="1000"
+      step="100"
+      [(ngModel)]="settings.thinkingTime"
+      (input)="onSettingsChange()"
+      style="margin-top:2px; display:block;"
+    />
 
     <label>
-      <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()" /> Show Eval
+      <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()" style="margin-top:15px"/> Show Eval
     </label>
 
     <label>
