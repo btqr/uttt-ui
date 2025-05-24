@@ -1,13 +1,12 @@
 <div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
 
+  <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">&times;</button>
+
+
   <div class="tabs">
     <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">Moves</button>
     <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">Settings</button>
   </div>
-
-  <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">
-    &times;
-  </button>
 
   <!-- Moves Tab Content -->
   <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">

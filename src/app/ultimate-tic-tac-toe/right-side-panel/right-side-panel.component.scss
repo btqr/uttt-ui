@@ -25,8 +25,8 @@
 /* Close button styling */
 .toggle-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: -10px;
+  right: 6px;
   border: none;
   background: transparent;
   font-size: 24px;
@@ -41,6 +41,7 @@
   justify-content: center;
   transition: color 0.2s ease;
   user-select: none;
+  z-index: 10;
 }
 
 .toggle-btn:hover {
@@ -101,8 +102,11 @@
 
 .tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: 0;
+  //border-bottom: 1px solid #ccc;
   margin-bottom: 1rem;
+  background: #fff;
+  box-shadow: 0 1px 0 #ccc; /* optional subtle bottom shadow instead */
 }
 
 .tabs button {
@@ -110,21 +114,27 @@
   padding: 0.5rem 1rem;
   background: #fff;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s;
 }
 
 .tabs button.active {
-  background: #fff;
-  border-bottom: 2px solid #3f51b5;
+  background-color: #f2f9fc;
+  border-bottom-color: #3f51b5;
+  font-weight: 700;
   color: #3f51b5;
+  letter-spacing: 0.05em;
 }
 
 .tab-content {
   display: flex;
   gap: 1rem;
+}
+
+.tabs button:first-child {
+  border-right: 1px solid #ccc; /* vertical separator */
 }
 
 .moves-grid {
