@@ -1,22 +1,10 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {GameState} from './game-state.model';
-import {convertSmallBoard, isWin} from '../utils';
+import {convertSmallBoard, isWin, WIN_MASKS} from '../utils';
 
 @Injectable({providedIn: 'root'})
 export class GameStateService {
-
-  // Winning masks for 3x3
-  WIN_MASKS = [
-    0b000000111, // row 0
-    0b000111000, // row 1
-    0b111000000, // row 2
-    0b001001001, // col 0
-    0b010010010, // col 1
-    0b100100100, // col 2
-    0b100010001, // diag
-    0b001010100  // anti-diag
-  ];
 
   private gameStateSubject: BehaviorSubject<GameState>;
 
@@ -25,6 +13,36 @@ export class GameStateService {
   constructor() {
     this.gameStateSubject = new BehaviorSubject<GameState>(this.createStartState());
     this.gameState$ = this.gameStateSubject.asObservable();
+  }
+
+  makeMove(big: number, row: number, col: number, aiMove: boolean): void {
+    const state = structuredClone(this.gameStateSubject.value);
+
+    if (!this.canMove(state.board, big, row, col, state.activeBoard)) return;
+
+    state.board[big][row][col] = state.currentPlayer;
+
+    const nextActiveBoard = this.isBoardCompleted(state.board, row * 3 + col)
+      ? null
+      : row * 3 + col;
+
+    const winner = this.getWinnerFromBoard(state.board);
+
+    const newState: GameState = {
+      ...state,
+      board: state.board,
+      currentPlayer: state.currentPlayer === 'X' ? 'O' : 'X',
+      activeBoard: nextActiveBoard,
+      lastMove: { big, row, col },
+      winner,
+      lastMovePlayer: !aiMove,
+    };
+
+    this.gameStateSubject.next(newState);
+  }
+
+  clearBoard(): void {
+    this.gameStateSubject.next(this.createStartState());
   }
 
   createStartState(): GameState {
@@ -38,68 +56,12 @@ export class GameStateService {
     }
   }
 
-  makeMove(big: number, row: number, col: number, aiMove: boolean): void {
-    const state = this.gameStateSubject.value;
-    const board = state.board.map(boardRow =>
-      boardRow.map(boardCol => [...boardCol])
-    );
-
-    if (this.canMove(board, big, row, col, state.activeBoard)) {
-      board[big][row][col] = state.currentPlayer;
-      let activeBoard: number | null = row * 3 + col;
-      if (this.isBoardCompleted(board, activeBoard)) {
-        activeBoard = null;
-      }
-      const newPlayer = state.currentPlayer === 'X' ? 'O' : 'X';
-      const lastMove = { big, row, col };
-      const winner = this.getWinnerFromBoard(board);
-
-      const updatedState: GameState = {
-        board,
-        currentPlayer: newPlayer,
-        activeBoard,
-        lastMove,
-        winner,
-        lastMovePlayer: !aiMove
-      };
-      this.gameStateSubject.next(updatedState);
-    }
+  isBoardCompleted(b: string[][][], big: number): boolean {
+    return this.getWinningLine(b[big]) !== null;
   }
 
-  clearBoard() {
-    this.gameStateSubject.next(this.createStartState());
-  }
-
-  isBoardCompleted(b:string[][][], big: number): boolean {
-    const board = b[big];
-
-    const checkLine = (a: string, b: string, c: string) =>
-      a !== '' && a === b && b === c;
-
-    for (let i = 0; i < 3; i++) {
-      if (checkLine(board[i][0], board[i][1], board[i][2])) return true;
-      if (checkLine(board[0][i], board[1][i], board[2][i])) return true;
-    }
-    if (checkLine(board[0][0], board[1][1], board[2][2])) return true;
-    if (checkLine(board[0][2], board[1][1], board[2][0])) return true;
-
-    return false;
-  }
-
-  getMiniBoardWinner(b:string[][][], big: number): string | null {
-    const board = b[big];
-
-    const checkLine = (a: string, b: string, c: string) =>
-      a !== '' && a === b && b === c;
-
-    for (let i = 0; i < 3; i++) {
-      if (checkLine(board[i][0], board[i][1], board[i][2])) return board[i][2];
-      if (checkLine(board[0][i], board[1][i], board[2][i])) return board[2][i];
-    }
-    if (checkLine(board[0][0], board[1][1], board[2][2])) return board[2][2];
-    if (checkLine(board[0][2], board[1][1], board[2][0])) return board[2][0];
-
-    return null;
+  getMiniBoardWinner(b: string[][][], big: number): string | null {
+    return this.getWinningLine(b[big]);
   }
 
   private canMove(board: string[][][], big: number, row: number, col: number, activeBoard: number | null): boolean {
@@ -109,9 +71,30 @@ export class GameStateService {
       && this.getWinnerFromBoard(board) === null
   }
 
-  private createEmptyBoard() {
-    return Array.from({length: 9}, () =>
-      Array.from({length: 3}, () => Array(3).fill(''))
+  private createEmptyBoard(): string[][][] {
+    return Array.from({ length: 9 }, () =>
+      Array.from({ length: 3 }, () => Array(3).fill(''))
+    );
+  }
+
+  private getWinningLine(board: string[][]): string | null {
+    const checkLine = (a: string, b: string, c: string): string | null =>
+      a !== '' && a === b && b === c ? a : null;
+
+    // Rows and Columns
+    for (let i = 0; i < 3; i++) {
+      const row = checkLine(board[i][0], board[i][1], board[i][2]);
+      if (row) return row;
+
+      const col = checkLine(board[0][i], board[1][i], board[2][i]);
+      if (col) return col;
+    }
+
+    // Diagonals
+    return (
+      checkLine(board[0][0], board[1][1], board[2][2]) ??
+      checkLine(board[0][2], board[1][1], board[2][0]) ??
+      null
     );
   }
 
@@ -120,7 +103,7 @@ export class GameStateService {
     const finishedBoardsMask = this.getFinishedBoardsMask(board);
 
     // Check for big board wins
-    for (const mask of this.WIN_MASKS) {
+    for (const mask of WIN_MASKS) {
       if ((bigBoardCircle & mask) === mask) return 'O';
       if ((bigBoardCross & mask) === mask) return 'X';
     }
