@@ -1,13 +1,12 @@
 import {Injectable, OnInit, signal} from '@angular/core';
 import {JavaPosition} from './java-position.model';
-import {withLatestFrom} from 'rxjs';
-import {GameStateService} from './game-state.service';
-import {SettingsService} from './settings.service';
-import {GameState} from './game-state.model';
-import {Settings} from './settings.model';
-import {convertSmallBoard, isWin} from './utils';
-import {resolve} from '@angular/compiler-cli';
-import {analysisResult$} from './analysis-result-updater';
+import {BehaviorSubject, Observable, withLatestFrom} from 'rxjs';
+import {GameStateService} from '../game-state/game-state.service';
+import {SettingsService} from '../settings/settings.service';
+import {GameState} from '../game-state/game-state.model';
+import {Settings} from '../settings/settings.model';
+import {convertSmallBoard, isWin} from '../utils';
+import {AnalysisResult, Move} from './analysis-result.model';
 
 
 declare const TeaVM: any;
@@ -18,8 +17,16 @@ export class EngineService {
   private currentAnalysisAbortController: AbortController | null = null;
   private analysisLock: Promise<void> = Promise.resolve();
   private teavm: any;
+  private analysisResultSubject = new BehaviorSubject<AnalysisResult | null>(null);
+
+  analysisResult$: Observable<AnalysisResult | null>;
 
   constructor(private gameStateService: GameStateService, private settingsService: SettingsService) {
+    (window as any).returnInfo = (result: any) => {
+      this.analysisResultSubject.next(parseEngineOutput(result));
+    };
+    this.analysisResult$ = this.analysisResultSubject.asObservable();
+
     this.init().then(() => {
       this.gameStateService.gameState$
         .pipe(withLatestFrom(this.settingsService.settings$))
@@ -99,7 +106,7 @@ export class EngineService {
     for (const big of boardsToCheck) {
       for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 3; col++) {
-          const move = analysisResult$.getValue()?.moves[big][row][col];
+          const move = this.analysisResultSubject.getValue()?.moves[big][row][col];
           if (move && move.visits > maxVisits) {
             maxVisits = move.visits;
             bestMove = {big, row, col};
@@ -142,7 +149,47 @@ export class EngineService {
       playerToMove: currentPlayer === 'O' ? 0 : 1 // Java: 0 = Circle/O, 1 = Cross/X
     };
   }
+}
 
+function parseEngineOutput(input: string): AnalysisResult {
+  // Initialize empty structure
+  const moves: (Move | null)[][][] = Array.from({length: 9}, () =>
+    Array.from({length: 3}, () =>
+      Array.from({length: 3}, () => null as Move | null)
+    )
+  );
+  const lines = input.trim().split('\n');
+
+  let maxVisits = 0;
+  let allEvals = []
+  for (const line of lines) {
+    const [indexStr, visitsStr, scoreStr] = line.trim().split(/\s+/);
+
+    const index = parseInt(indexStr, 10);
+    const visits = parseInt(visitsStr, 10);
+    if (visits) {
+      maxVisits = Math.max(visits, maxVisits);
+    }
+    let score = parseFloat(scoreStr);
+    score = Math.max(score, -1);
+    score = Math.min(score, 1);
+    if (score) {
+      allEvals.push(score);
+    }
+
+    const big = Math.floor(index / 9);
+    const field = index % 9;
+    const row = Math.floor(field / 3);
+    const col = field % 3;
+
+    moves[big][row][col] = {visits, score};
+  }
+  allEvals.sort((a, b) => b - a);
+  const index = Math.min(9, allEvals.length - 1);
+  let threshold: number | null = allEvals.length > 0 ? allEvals[index] : 0;
+  // let threshold = 0;
+
+  return {moves, maxVisits: maxVisits, evalThreshold: threshold};
 }
 
 

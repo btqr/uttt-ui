@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Settings} from '../../services/settings.model';
+import {Settings} from '../../services/settings/settings.model';
 import {FormsModule} from '@angular/forms';
-import {SettingsService} from '../../services/settings.service';
+import {SettingsService} from '../../services/settings/settings.service';
 
 @Component({
   selector: 'right-side-panel',

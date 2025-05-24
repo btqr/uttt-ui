@@ -1,18 +1,17 @@
 import {Component} from '@angular/core';
-import {EngineService} from '../services/engine.service';
+import {EngineService} from '../services/engine/engine.service';
 import {CommonModule} from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
-import {AnalysisResult, Move} from '../services/analysis-result.model';
+import {AnalysisResult, Move} from '../services/engine/analysis-result.model';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import {GameOverDialogComponent} from './game-over-popup/game-over-dialog.component';
-import {Settings} from '../services/settings.model';
+import {Settings} from '../services/settings/settings.model';
 import {SettingsComponent} from './right-side-panel/right-side-panel.component';
-import {SettingsService} from '../services/settings.service';
-import {GameState} from '../services/game-state.model';
-import {GameStateService} from '../services/game-state.service';
-import {analysisResult$} from '../services/analysis-result-updater';
+import {SettingsService} from '../services/settings/settings.service';
+import {GameState} from '../services/game-state/game-state.model';
+import {GameStateService} from '../services/game-state/game-state.service';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
@@ -34,7 +33,7 @@ export class UltimateTicTacToeComponent {
     this.settingsService.settings$.subscribe(settings => {
       this.settings = settings;
     })
-    analysisResult$.subscribe(result => {
+    engine.analysisResult$.subscribe(result => {
       this.analysisResult = result;
     });
   }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {GameState} from './game-state.model';
-import {convertSmallBoard, isWin} from './utils';
+import {convertSmallBoard, isWin} from '../utils';
 
 @Injectable({providedIn: 'root'})
 export class GameStateService {
