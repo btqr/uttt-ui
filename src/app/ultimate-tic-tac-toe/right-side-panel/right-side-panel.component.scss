@@ -142,6 +142,9 @@
   flex-direction: row; /* Ensure horizontal layout */
   gap: 2rem;
   justify-content: space-between;
+  max-height: 300px; /* or whatever height fits your layout */
+  overflow-y: auto;
+  padding-right: 8px; /* optional, to avoid content being hidden under scrollbar */
 }
 
 .player-column {
@@ -164,3 +167,4 @@
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
+
