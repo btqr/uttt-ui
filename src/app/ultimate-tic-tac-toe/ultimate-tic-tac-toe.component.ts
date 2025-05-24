@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit, OnDestroy, NgZone, signal} from '@angular/core';
-import {analysisResult$, convertBigBoards, EngineService} from '../engine/engine.service';
+import {Component, OnInit, OnDestroy, NgZone, signal} from '@angular/core';
+import {analysisResult$, convertBigBoards, EngineService} from '../services/engine.service';
 import {CommonModule} from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
-import {AnalysisResult, Move} from '../engine/analysis-result.model';
+import {AnalysisResult, Move} from '../services/analysis-result.model';
 import {FormsModule} from '@angular/forms';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
