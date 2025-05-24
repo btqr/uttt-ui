@@ -136,6 +136,18 @@
   opacity: 0;
 }
 
+.cell.last-move-blue {
+  border: 2px solid #5c6bc0;        /* Softer blue */
+  background-color: #f8f9ff;        /* extremely light blue background */
+  box-shadow: 0 0 6px rgba(92, 107, 192, 0.3); /* gentle blue glow */
+}
+
+.cell.last-move-red {
+  border: 2px solid #e57373;        /* Softer red */
+  background-color: #fff5f5;        /* extremely light pink background */
+  box-shadow: 0 0 6px rgba(229, 115, 115, 0.3); /* gentle red glow */
+}
+
 .cell.active-move:hover {
   background-color: #e3f2fd;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);

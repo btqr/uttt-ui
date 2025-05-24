@@ -71,6 +71,11 @@ export class UltimateTicTacToeComponent {
   makeMove(big: number, row: number, col: number) {
     return this.gameStateService.makeMove(big, row, col, false);
   }
+
+  isLastMove(big: number, row: number, col: number) {
+    const last = this.gameState.lastMove;
+    return last?.big == big && last?.row == row && last?.col == col;
+  }
 }
 
 

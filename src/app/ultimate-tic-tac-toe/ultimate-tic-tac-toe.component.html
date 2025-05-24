@@ -36,6 +36,8 @@
                      [class.disabled]="!(gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big))"
                      [class.active-move]="gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big)"
                      [class.big-win]="getMiniBoardWinner(big) === 'X' || getMiniBoardWinner(big) === 'O'"
+                     [class.last-move-blue]="gameState.currentPlayer == 'O' && isLastMove(big, row, col)"
+                     [class.last-move-red]="gameState.currentPlayer == 'X' && isLastMove(big, row, col)"
                      (click)="makeMove(big, row, col)"
                 >
                   {{ getCellContent(big, row, col) }}
