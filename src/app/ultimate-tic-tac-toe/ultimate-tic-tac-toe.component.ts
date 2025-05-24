@@ -12,11 +12,12 @@ import {SettingsComponent} from './right-side-panel/right-side-panel.component';
 import {SettingsService} from '../services/settings/settings.service';
 import {GameState} from '../services/game-state/game-state.model';
 import {GameStateService} from '../services/game-state/game-state.service';
+import {LoadingPopup} from './loading-popup/loading-popup.component';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatGridListModule, MatButtonModule, FormsModule, GameOverDialogComponent, SettingsComponent],
+  imports: [CommonModule, MatDialogModule, MatGridListModule, MatButtonModule, FormsModule, GameOverDialogComponent, SettingsComponent, LoadingPopup],
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })

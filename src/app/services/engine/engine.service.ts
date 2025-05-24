@@ -1,6 +1,6 @@
 import {Injectable, OnInit, signal} from '@angular/core';
 import {JavaPosition} from './java-position.model';
-import {BehaviorSubject, Observable, withLatestFrom} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject, withLatestFrom} from 'rxjs';
 import {GameStateService} from '../game-state/game-state.service';
 import {SettingsService} from '../settings/settings.service';
 import {GameState} from '../game-state/game-state.model';
@@ -16,9 +16,12 @@ export class EngineService {
   private currentAnalysisAbortController: AbortController | null = null;
   private analysisLock: Promise<void> = Promise.resolve();
   private teavm: any;
-  private analysisResultSubject = new BehaviorSubject<AnalysisResult | null>(null);
 
-  analysisResult$: Observable<AnalysisResult | null>;
+  private analysisResultSubject = new BehaviorSubject<AnalysisResult | null>(null);
+  private engineInitializedSubject = new BehaviorSubject<boolean>(false);
+
+  public analysisResult$: Observable<AnalysisResult | null>;
+  public engineInitialized$ = this.engineInitializedSubject.asObservable();
 
   constructor(private gameStateService: GameStateService, private settingsService: SettingsService) {
     (window as any).returnInfo = (result: any) => {
@@ -39,6 +42,7 @@ export class EngineService {
   private async init(): Promise<void> {
     this.teavm = await TeaVM.wasmGC.load('assets/classes.wasm', {});
     console.log('TeaVM loaded');
+    this.engineInitializedSubject.next(true);
   }
 
   private async analyze(board: string[][][], activeBoard: number | null, currentPlayer: 'X' | 'O',

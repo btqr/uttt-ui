@@ -1,0 +1,47 @@
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); // dark transparent overlay
+  z-index: 9999;
+}
+
+
+.loading-popup {
+  background: #ffffff;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); /* Elevation */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-width: 240px;
+  max-width: 90%;
+}
+
+.loading-popup p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #3f51b5; /* Material Indigo */
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

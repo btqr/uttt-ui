@@ -11,8 +11,9 @@
       </button>
 
       <div class="ultimate-container">
-        <div class="mat-grid-list">
+        <loading-popup></loading-popup>
 
+        <div class="mat-grid-list">
           <div
             class="mini-board-container"
             *ngFor="let miniBoard of gameState.board; let big = index"
@@ -48,10 +49,10 @@
                         </small>
                       </div>
                     </ng-container>
-
                 </div>
               </div>
             </div>
+
           </div>
 
         </div>
