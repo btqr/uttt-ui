@@ -1,16 +1,18 @@
-import {Component, OnInit, OnDestroy, NgZone, signal} from '@angular/core';
-import {analysisResult$, convertBigBoards, EngineService} from '../services/engine.service';
+import {Component} from '@angular/core';
+import {EngineService} from '../services/engine.service';
 import {CommonModule} from '@angular/common';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
 import {AnalysisResult, Move} from '../services/analysis-result.model';
 import {FormsModule} from '@angular/forms';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 import {GameOverDialogComponent} from './game-over-popup/game-over-dialog.component';
 import {Settings} from '../services/settings.model';
 import {SettingsComponent} from './right-side-panel/right-side-panel.component';
-import {SettingsService} from '../services/settings-service';
+import {SettingsService} from '../services/settings.service';
+import {GameState} from '../services/game-state.model';
+import {GameStateService} from '../services/game-state.service';
+import {analysisResult$} from '../services/analysis-result-updater';
 
 @Component({
   selector: 'app-ultimate-tic-tac-toe',
@@ -19,142 +21,55 @@ import {SettingsService} from '../services/settings-service';
   templateUrl: './ultimate-tic-tac-toe.component.html',
   styleUrls: ['./ultimate-tic-tac-toe.component.scss']
 })
-
-
-export class UltimateTicTacToeComponent implements OnInit, OnDestroy {
-  board: string[][][] = this.createEmptyBoard();
-  currentPlayer: 'X' | 'O' = 'X';
-  activeBoard: number | null = null; // 0-8 or null for any
-  lastMove: { big: number; row: number; col: number } | null = null;
-  analysisResult = signal<AnalysisResult | null>(null);
+export class UltimateTicTacToeComponent {
+  gameState!: GameState;
+  analysisResult: AnalysisResult | null = null;
   settings!: Settings;
 
-  winner$ = new BehaviorSubject<'O' | 'X' | 'Draw' | null>(null);
-
-  private subscription: Subscription;
-
-  constructor(private engine: EngineService, private settingsService: SettingsService,
-              private ngZone: NgZone, private dialog: MatDialog) {
-    this.subscription = analysisResult$.subscribe(result => {
-      this.ngZone.run(() => {
-        this.analysisResult.set(result);
-      });
+  constructor(private engine: EngineService, public settingsService: SettingsService,
+              private gameStateService: GameStateService) {
+    this.gameStateService.gameState$.subscribe(gameState => {
+      this.gameState = gameState
     });
-  }
-
-  async ngOnInit() {
     this.settingsService.settings$.subscribe(settings => {
-      this.settings = { ...settings };
+      this.settings = settings;
+    })
+    analysisResult$.subscribe(result => {
+      this.analysisResult = result;
     });
-    this.engine.init()
-      .then(() => this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime));
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  makeMove(big: number, row: number, col: number, aiMove: boolean): void {
-    if (
-      this.board[big][row][col] === '' &&
-      (this.activeBoard === null || this.activeBoard === big)
-      && !this.isBoardCompleted(big)
-      && this.getWinnerFromBoard() == null
-    ) {
-      this.board[big][row][col] = this.currentPlayer;
-      this.lastMove = {big, row, col};
-      this.activeBoard = row * 3 + col;
-      if (this.isBoardCompleted(this.activeBoard)) {
-        this.activeBoard = null;
-      }
-      this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
-      if (this.getWinnerFromBoard() == null) {
-        this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime);
-        if (this.settings.playVsAi && !aiMove) {
-          setTimeout(() => {
-            const move = this.engine.getBestMove(this.board, this.activeBoard);
-            if (move) this.makeMove(move.big, move.row, move.col, true);
-          }, this.settings.thinkingTime);
-        }
-      }
-      this.winner$.next(this.getWinnerFromBoard());
-    }
-  }
-
-  isBoardCompleted(big: number): boolean {
-    const board = this.board[big];
-
-    const checkLine = (a: string, b: string, c: string) =>
-      a !== '' && a === b && b === c;
-
-    for (let i = 0; i < 3; i++) {
-      if (checkLine(board[i][0], board[i][1], board[i][2])) return true;
-      if (checkLine(board[0][i], board[1][i], board[2][i])) return true;
-    }
-    if (checkLine(board[0][0], board[1][1], board[2][2])) return true;
-    if (checkLine(board[0][2], board[1][1], board[2][0])) return true;
-
-    return false;
-  }
-
-  getMiniBoardWinner(big: number): string | null {
-    const board = this.board[big];
-
-    const checkLine = (a: string, b: string, c: string) =>
-      a !== '' && a === b && b === c;
-
-    for (let i = 0; i < 3; i++) {
-      if (checkLine(board[i][0], board[i][1], board[i][2])) return board[i][2];
-      if (checkLine(board[0][i], board[1][i], board[2][i])) return board[2][i];
-    }
-    if (checkLine(board[0][0], board[1][1], board[2][2])) return board[2][2];
-    if (checkLine(board[0][2], board[1][1], board[2][0])) return board[2][0];
-
-    return null;
   }
 
   isBestMove(big: number, row: number, col: number): boolean {
     const move = this.getMove(big, row, col);
-    return move?.visits === this.analysisResult()?.maxVisits;
+    return move?.visits === this.analysisResult?.maxVisits;
   }
 
   getCellContent(big: number, row: number, col: number): string {
-    return this.board[big][row][col];
+    return this.gameState.board[big][row][col];
   }
 
   getMove(big: number, row: number, col: number): Move | null {
-    return this.analysisResult()?.moves?.[big]?.[row]?.[col] ?? null;
+    return this.analysisResult?.moves?.[big]?.[row]?.[col] ?? null;
   }
 
   clearBoard() {
-    this.board = this.createEmptyBoard();
-    this.activeBoard = null;
-    this.currentPlayer = 'X';
-    this.lastMove = null;
-    // this.engine.init();
-    this.engine.analyze(this.board, this.activeBoard, this.currentPlayer, this.settings.thinkingTime);
-  }
-
-  createEmptyBoard() {
-    return Array.from({length: 9}, () =>
-      Array.from({length: 3}, () => Array(3).fill(''))
-    );
-  }
-
-  getWinnerFromBoard(): "X" | "O" | "Draw" | null {
-    return this.engine.getWinner(this.board);
-  }
-
-  handleRestart() {
-    this.clearBoard();
-  }
-
-  onSettingsChange(settings: Settings) {
-    this.settings = settings;
+    this.gameStateService.clearBoard();
   }
 
   toggleSettings() {
     this.settingsService.toggle();
+  }
+
+  isBoardCompleted(big: number) {
+    return this.gameStateService.isBoardCompleted(this.gameState.board, big);
+  }
+
+  getMiniBoardWinner(big: number) {
+    return this.gameStateService.getMiniBoardWinner(this.gameState.board, big);
+  }
+
+  makeMove(big: number, row: number, col: number) {
+    return this.gameStateService.makeMove(big, row, col, false);
   }
 }
 

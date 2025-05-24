@@ -4,19 +4,19 @@
     <div class="board-wrapper">
       <button
         class="show-btn"
-        *ngIf="!settings.isSettingsVisible"
+        *ngIf="!settings?.isSettingsVisible"
         (click)="toggleSettings()"
         aria-label="Show settings"
       >⚙️
       </button>
 
-
       <div class="ultimate-container">
         <div class="mat-grid-list">
+
           <div
             class="mini-board-container"
-            *ngFor="let miniBoard of board; let big = index"
-            [class.active]="(activeBoard === null || activeBoard === big) && !isBoardCompleted(big)"
+            *ngFor="let miniBoard of gameState.board; let big = index"
+            [class.active]="(gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big)"
             [class.completed]="isBoardCompleted(big)"
           >
 
@@ -32,22 +32,22 @@
                 <div class="cell" *ngFor="let col of [0,1,2]"
                      [class.occupied-o]="getCellContent(big, row, col) == 'O'"
                      [class.occupied-x]="getCellContent(big, row, col) == 'X'"
-                     [class.disabled]="!(getWinnerFromBoard() == null && this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big))"
-                     [class.active-move]="getWinnerFromBoard() == null && this.board[big][row][col] === '' && (this.activeBoard === null || this.activeBoard === big) && !isBoardCompleted(big)"
+                     [class.disabled]="!(gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big))"
+                     [class.active-move]="gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big)"
                      [class.big-win]="getMiniBoardWinner(big) === 'X' || getMiniBoardWinner(big) === 'O'"
-                     (click)="makeMove(big, row, col, false)"
+                     (click)="makeMove(big, row, col)"
                 >
                   {{ getCellContent(big, row, col) }}
-                  <ng-container *ngIf="getMove(big, row, col) as move">
-                    <div class="engine-data"
-                         [class.best]="isBestMove(big, row, col)"
-                         [class.bad]="move.score < (analysisResult()?.evalThreshold ?? -10)">
-                      <small>
-                        <span class="eval" *ngIf="settings.showEval"> {{ move.score | number:'1.2-2' }}</span><br>
-                        <span class="visits" *ngIf="settings.showVisits"> {{ move.visits }}</span>
-                      </small>
-                    </div>
-                  </ng-container>
+                    <ng-container *ngIf="getMove(big, row, col) as move">
+                      <div class="engine-data"
+                           [class.best]="isBestMove(big, row, col)"
+                           [class.bad]="move.score < (analysisResult?.evalThreshold ?? -10)">
+                        <small>
+                          <span class="eval" *ngIf="settings?.showEval"> {{ move.score | number:'1.2-2' }}</span><br>
+                          <span class="visits" *ngIf="settings?.showVisits"> {{ move.visits }}</span>
+                        </small>
+                      </div>
+                    </ng-container>
 
                 </div>
               </div>
@@ -55,7 +55,7 @@
           </div>
 
         </div>
-        <app-game-over-dialog [winner]="winner$ | async" (restart)="handleRestart()"></app-game-over-dialog>
+        <app-game-over-dialog [winner]="gameState.winner" (restart)="clearBoard()"></app-game-over-dialog>
       </div>
   </div>
 
