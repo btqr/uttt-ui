@@ -77,6 +77,11 @@
   box-sizing: border-box;
 }
 
+.settings-panel .tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
 .clear-btn {
   margin-top: 16px;
   width: 100%;
@@ -92,4 +97,60 @@
 
 .clear-btn:hover {
   background-color: #b02a37;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.tabs button.active {
+  background: #fff;
+  border-bottom: 2px solid #3f51b5;
+  color: #3f51b5;
+}
+
+.tab-content {
+  display: flex;
+  gap: 1rem;
+}
+
+.moves-grid {
+  display: flex;
+  flex-direction: row; /* Ensure horizontal layout */
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+.player-column {
+  flex: 1;
+}
+
+.player-column h4 {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.move-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.move-list li {
+  padding: 0.25rem 0;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
 }

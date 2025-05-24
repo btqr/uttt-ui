@@ -27,6 +27,11 @@ export class GameStateService {
       : row * 3 + col;
 
     const winner = this.getWinnerFromBoard(state.board);
+    const moves = state.moves;
+
+    const rowStr = Math.floor(big/3) * 3 + Math.floor((row * 3 + col)/3);
+    const columnStr = big%3 * 3 + (row * 3 + col)%3;
+    moves.push(rowStr + ' ' + columnStr);
 
     const newState: GameState = {
       ...state,
@@ -36,6 +41,7 @@ export class GameStateService {
       lastMove: { big, row, col },
       winner,
       lastMovePlayer: !aiMove,
+      moves: moves
     };
 
     this.gameStateSubject.next(newState);
@@ -52,7 +58,8 @@ export class GameStateService {
       activeBoard: null,
       lastMove: null,
       winner: null,
-      lastMovePlayer: false
+      lastMovePlayer: false,
+      moves: []
     }
   }
 

@@ -5,4 +5,5 @@ export interface GameState {
   lastMove: { big: number; row: number; col: number } | null;
   winner: 'X' | 'O' | 'Draw' | null;
   lastMovePlayer: boolean;
+  moves: string[];
 }

@@ -1,27 +1,56 @@
 <div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
+
+  <div class="tabs">
+    <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">Moves</button>
+    <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">Settings</button>
+  </div>
+
   <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">
     &times;
   </button>
-  <h3>Engine Settings</h3>
 
-  <label>
-    Thinking Time (ms):
-    <input type="number" [(ngModel)]="settings.thinkingTime" (ngModelChange)="onSettingsChange()" min="100" step="100" />
-  </label>
+  <!-- Moves Tab Content -->
+  <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
+    <div class="moves-grid">
+      <div class="player-column">
+        <h4>Cross</h4>
+        <ul class="move-list">
+          <li *ngFor="let move of player1Moves">{{ move }}</li>
+        </ul>
+      </div>
+      <div class="player-column">
+        <h4>Circle</h4>
+        <ul class="move-list">
+          <li *ngFor="let move of player2Moves">{{ move }}</li>
+        </ul>
+      </div>
+    </div>
 
-  <label>
-    <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()" /> Show Eval
-  </label>
+    <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
+      Clear Board
+    </button>
 
-  <label>
-    <input type="checkbox" [(ngModel)]="settings.showVisits" (ngModelChange)="onSettingsChange()" /> Show Visits
-  </label>
+  </div>
 
-  <label>
-    <input type="checkbox" [(ngModel)]="settings.playVsAi" (ngModelChange)="onSettingsChange()" /> AI moves automatically
-  </label>
+  <!-- Settings Tab Content -->
+  <div *ngIf="activeTab === 'settings'" class="settings-tab tab-content">
+    <h3>Engine Settings</h3>
 
-  <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
-    Clear Board
-  </button>
+    <label>
+      Thinking Time (ms):
+      <input type="number" [(ngModel)]="settings.thinkingTime" (ngModelChange)="onSettingsChange()" min="100" step="100" />
+    </label>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()" /> Show Eval
+    </label>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="settings.showVisits" (ngModelChange)="onSettingsChange()" /> Show Visits
+    </label>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="settings.playVsAi" (ngModelChange)="onSettingsChange()" /> AI moves automatically
+    </label>
+  </div>
 </div>
