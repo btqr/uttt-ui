@@ -76,6 +76,22 @@ export class UltimateTicTacToeComponent {
     const last = this.gameState.lastMove;
     return last?.big == big && last?.row == row && last?.col == col;
   }
+
+  isMovePossible(big: number, row: number, col: number) {
+    // if (this.gameState.board[big][row][col]) {
+      // console.log('-------');
+      // console.log(big, row, col);
+      // console.log(this.gameState.winner);
+      // console.log((this.gameState.activeBoard === null || this.gameState.activeBoard === big));
+      // console.log(!this.isBoardCompleted(big));
+      // console.log('----');
+    // }
+    return this.gameState.winner == null
+      && this.gameState.board[big][row][col] === ''
+      && (this.gameState.activeBoard === null || this.gameState.activeBoard === big)
+      && !this.isBoardCompleted(big)
+  }
+
 }
 
 

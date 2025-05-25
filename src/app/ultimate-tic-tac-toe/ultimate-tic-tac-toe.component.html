@@ -33,8 +33,8 @@
                 <div class="cell" *ngFor="let col of [0,1,2]"
                      [class.occupied-o]="getCellContent(big, row, col) == 'O'"
                      [class.occupied-x]="getCellContent(big, row, col) == 'X'"
-                     [class.disabled]="!(gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big))"
-                     [class.active-move]="gameState.winner == null && gameState.board[big][row][col] === '' && (gameState.activeBoard === null || gameState.activeBoard === big) && !isBoardCompleted(big)"
+                     [class.disabled]="!isMovePossible(big, row, col)"
+                     [class.active-move]="isMovePossible(big, row, col)"
                      [class.big-win]="getMiniBoardWinner(big) === 'X' || getMiniBoardWinner(big) === 'O'"
                      [class.last-move-blue]="gameState.currentPlayer == 'O' && isLastMove(big, row, col)"
                      [class.last-move-red]="gameState.currentPlayer == 'X' && isLastMove(big, row, col)"
@@ -51,6 +51,14 @@
                         </small>
                       </div>
                     </ng-container>
+                  <ng-container *ngIf="gameState.winner == null && !(getMove(big, row, col)) && isMovePossible(big, row, col)">
+                    <div  class="engine-data" [class.bad]="true">
+                      <small>
+                        <span class="eval">-1.00</span><br>
+                        <span class="visits">0</span>
+                      </small>
+                    </div>
+                  </ng-container>
                 </div>
               </div>
             </div>
