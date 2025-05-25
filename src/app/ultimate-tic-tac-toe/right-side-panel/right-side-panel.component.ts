@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {Settings} from '../../services/settings/settings.model';
 import {FormsModule} from '@angular/forms';
 import {SettingsService} from '../../services/settings/settings.service';
@@ -27,6 +27,8 @@ export class RightSidePanelComponent implements OnInit {
   moves: string[] = [];
   @Output() clearBoard = new EventEmitter<void>();
 
+  @ViewChild('scrollContainer') private scrollContainerRef!: ElementRef
+
   activeTab: 'moves' | 'settings' = 'moves';
 
   constructor(private settingsService: SettingsService, private gameStateService: GameStateService) {}
@@ -37,12 +39,21 @@ export class RightSidePanelComponent implements OnInit {
     });
     this.gameStateService.gameState$.subscribe(gameState => {
       this.moves = gameState.moves;
+      this.scrollToBottom();
     });
   }
 
   maxMovesArray(): number[] {
     const maxLength = Math.max(this.player1Moves.length, this.player2Moves.length);
+    this.scrollToBottom();
     return Array.from({ length: maxLength }, (_, i) => i);
+  }
+
+  private scrollToBottom(): void {
+    if (this.scrollContainerRef) {
+      // Set the scroll position to the maximum possible height
+      this.scrollContainerRef.nativeElement.scrollTop = this.scrollContainerRef.nativeElement.scrollHeight;
+    }
   }
 
   onSettingsChange(): void {

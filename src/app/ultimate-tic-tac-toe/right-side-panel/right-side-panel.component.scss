@@ -1,6 +1,6 @@
 .settings-panel {
   position: relative;
-  width: 220px;
+  width: 350px;
   padding: 16px;
   background-color: #fff;
   border-radius: 8px;
@@ -107,6 +107,8 @@
   margin-bottom: 1rem;
   background: #fff;
   box-shadow: 0 1px 0 #ccc; /* optional subtle bottom shadow instead */
+  overflow-y: auto;
+  max-height: 300px;
 }
 
 .tabs button {
@@ -137,41 +139,105 @@
   border-right: 1px solid #ccc; /* vertical separator */
 }
 
+.table-scroll-container {
+  max-height: 350px; /* Adjust this value as desired. The table will scroll if its content exceeds this height. */
+  overflow-y: auto;  /* Enables vertical scrolling when content overflows */
+  overflow-x: hidden;  /* Enables vertical scrolling when content overflows */
+  /* Optional: Add a subtle border around the scrollable area for visual clarity */
+  //border: 1px solid #e0e0e0;
+  //border-radius: 4px;
+  //margin-top: 1em; /* Adjust to provide spacing from elements above */
+}
+
+/* Existing table styles (ensure they don't conflict with the new container) */
 .moves-table {
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  margin-top: 1em;
 }
 
-.moves-table th,
-.moves-table td {
-  padding: 8px 12px;
-  text-align: left;
-}
-
+/* Sticky Header styling */
 .moves-table th {
-  border-bottom: 2px solid #ccc;
-  font-size: 1rem;
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background-color: #f8f8f8; /* IMPORTANT: Add a background color so content scrolls *behind* it */
+  position: sticky;           /* Makes the header sticky */
+  top: 0;                     /* Sticks to the top of the scroll container */
+  z-index: 1;                 /* Ensures it stays above scrolling tbody content */
+
+  /* Optional: If columns misalign, you might need to set explicit widths here and on corresponding td's */
+  /* Example: width: 33.33%; */
 }
 
-.moves-table td {
+/* Specific styling for the Move Number header and cell */
+.move-number-header {
+  width: 5%; /* Keep this width for the number column */
+  text-align: center;
+}
+
+.move-number-cell {
+  text-align: center;
   font-size: 0.95rem;
+  color: #555;
+  font-weight: bold;
 }
 
+/* Table body cells */
+.moves-table td {
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Row banding and hover */
 .moves-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f6f6f6;
 }
 
 .moves-table tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #e6e6e6;
+  cursor: default;
 }
 
+/* Coordinate styling */
 .coord {
-  font-family: monospace;
+  letter-spacing: 0.5px;
 }
 
+/* Strong tag (number) styling - ensure no conflicting properties */
 strong {
-  margin-right: 6px;
+  margin-right: 0;
+  padding-right: 0;
+  border-right: none;
+  display: inline;
+}
+
+@media (max-width: 768px) { /* Adjust max-width breakpoint as needed for typical mobile devices */
+  .table-scroll-container {
+    max-height: 180px; /* Reduce max height of the table on smaller screens */
+    /* You might want to remove the border on mobile for cleaner look if desired */
+    /* border: none; */
+  }
+
+  /* Optional: Adjust table padding/font-size for better mobile fit */
+  .moves-table th,
+  .moves-table td {
+    padding: 8px 10px; /* Slightly less padding */
+    font-size: 0.9rem;  /* Slightly smaller font */
+  }
+
+  .move-number-header,
+  .move-number-cell {
+    width: 10%; /* Give numbers a bit more room if they get squeezed */
+  }
+
+  .clear-btn {
+    margin-top: 15px; /* Adjust margin if needed on mobile */
+    padding: 10px 15px; /* Slightly smaller padding for the button */
+    font-size: 0.9rem;
+  }
 }
 

@@ -22,9 +22,7 @@ let teavm : any;
     MatButtonModule,
     FooterComponent,
     FormsModule,
-    CommonModule,
-    MatSliderModule,
-    MatSlider
+    CommonModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
