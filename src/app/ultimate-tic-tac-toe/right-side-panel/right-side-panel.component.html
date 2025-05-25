@@ -39,9 +39,15 @@
       </table>
     </div>
 
-    <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
-      Clear Board
-    </button>
+    <div class="button-row">
+      <button (click)="onUndo()" class="undo-btn" aria-label="Undo">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+
+      <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
+        Clear Board
+      </button>
+    </div>
 
   </div>
 

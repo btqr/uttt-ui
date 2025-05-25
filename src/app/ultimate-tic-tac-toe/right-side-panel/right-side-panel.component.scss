@@ -94,6 +94,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex: 1;
 }
 
 .clear-btn:hover {
@@ -213,6 +214,29 @@ strong {
   padding-right: 0;
   border-right: none;
   display: inline;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.undo-btn {
+  margin-top: 16px;
+  padding: 8px;
+  background-color: #0d6efd; /* Bootstrap blue */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 20%;
+}
+
+.undo-btn:hover {
+  background-color: #0b5ed7;
 }
 
 @media (max-width: 768px) { /* Adjust max-width breakpoint as needed for typical mobile devices */

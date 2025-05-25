@@ -30,12 +30,14 @@ export class UltimateTicTacToeComponent {
               private gameStateService: GameStateService) {
     this.gameStateService.gameState$.subscribe(gameState => {
       this.gameState = gameState
+      // console.log(gameState);
     });
     this.settingsService.settings$.subscribe(settings => {
       this.settings = settings;
     })
     engine.analysisResult$.subscribe(result => {
       this.analysisResult = result;
+      // console.log(result);
     });
   }
 
@@ -78,14 +80,6 @@ export class UltimateTicTacToeComponent {
   }
 
   isMovePossible(big: number, row: number, col: number) {
-    // if (this.gameState.board[big][row][col]) {
-      // console.log('-------');
-      // console.log(big, row, col);
-      // console.log(this.gameState.winner);
-      // console.log((this.gameState.activeBoard === null || this.gameState.activeBoard === big));
-      // console.log(!this.isBoardCompleted(big));
-      // console.log('----');
-    // }
     return this.gameState.winner == null
       && this.gameState.board[big][row][col] === ''
       && (this.gameState.activeBoard === null || this.gameState.activeBoard === big)

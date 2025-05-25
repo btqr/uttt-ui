@@ -57,7 +57,6 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   onSettingsChange(): void {
-    console.log('Thinking time changed:', this.settings.thinkingTime);
     this.settingsService.updateSettings(this.settings);
   }
 
@@ -71,8 +70,11 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   setTab(tab: 'moves' | 'settings') {
-    console.log('tab: ' + tab)
     this.activeTab = tab;
+  }
+
+  onUndo() {
+    this.gameStateService.undoMove();
   }
 
   get player1Moves(): string[] {
@@ -82,5 +84,4 @@ export class RightSidePanelComponent implements OnInit {
   get player2Moves(): string[] {
     return this.moves.filter((_, index) => index % 2 === 1); // Odd indexes
   }
-
 }

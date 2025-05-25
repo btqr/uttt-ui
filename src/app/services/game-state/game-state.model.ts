@@ -1,4 +1,5 @@
 export interface GameState {
+  currentMove: number
   board: string[][][];
   currentPlayer: 'X' | 'O';
   activeBoard: number | null;

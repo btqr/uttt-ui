@@ -164,6 +164,8 @@ export class EngineService {
 
     let maxVisits = 0;
     let allEvals = []
+    if (lines[0] == '') return {moves, maxVisits: 0, evalThreshold: 0};
+
     for (const line of lines) {
       const [indexStr, visitsStr, scoreStr] = line.trim().split(/\s+/);
 

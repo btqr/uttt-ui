@@ -7,12 +7,22 @@ import {convertSmallBoard, isWin, WIN_MASKS} from '../utils';
 export class GameStateService {
 
   private gameStateSubject: BehaviorSubject<GameState>;
+  private gameStateHistorySubject: BehaviorSubject<GameState[]>;
+  private currentMoveDisplayedSubject: BehaviorSubject<number>;
 
   gameState$: Observable<GameState>;
+  gameStateHistory$: Observable<GameState[]>;
+  currentMoveDisplayed$: Observable<number>;
 
   constructor() {
     this.gameStateSubject = new BehaviorSubject<GameState>(this.createStartState());
     this.gameState$ = this.gameStateSubject.asObservable();
+
+    this.gameStateHistorySubject = new BehaviorSubject<GameState[]>([]);
+    this.gameStateHistory$ = this.gameStateHistorySubject.asObservable();
+
+    this.currentMoveDisplayedSubject = new BehaviorSubject(0);
+    this.currentMoveDisplayed$ = this.currentMoveDisplayedSubject.asObservable();
   }
 
   makeMove(big: number, row: number, col: number, aiMove: boolean): void {
@@ -33,8 +43,11 @@ export class GameStateService {
     const columnStr = big%3 * 3 + (row * 3 + col)%3;
     moves.push(rowStr + '-' + columnStr);
 
+    const currentMove = this.currentMoveDisplayedSubject.getValue() + 1;
+
     const newState: GameState = {
       ...state,
+      currentMove: currentMove,
       board: state.board,
       currentPlayer: state.currentPlayer === 'X' ? 'O' : 'X',
       activeBoard: nextActiveBoard,
@@ -45,22 +58,34 @@ export class GameStateService {
     };
 
     this.gameStateSubject.next(newState);
+    this.currentMoveDisplayedSubject.next(currentMove);
+
+    const newHistory = [];
+    for (let state of this.gameStateHistorySubject.getValue()) {
+      if (state.currentMove < currentMove) {
+        newHistory.push(state);
+      }
+    }
+    newHistory.push(newState);
+    this.gameStateHistorySubject.next(newHistory);
+  }
+
+  undoMove(): void {
+    const currentMove = this.currentMoveDisplayedSubject.getValue() - 1;
+    const gameState = this.gameStateHistorySubject.getValue()
+      .find(gameState => gameState.currentMove == currentMove);
+    if (gameState == undefined) {
+      throw new Error("Game state not found!");
+    }
+
+    this.gameStateSubject.next(gameState);
+    this.currentMoveDisplayedSubject.next(currentMove);
   }
 
   clearBoard(): void {
     this.gameStateSubject.next(this.createStartState());
-  }
-
-  createStartState(): GameState {
-    return {
-      board: this.createEmptyBoard(),
-      currentPlayer: 'X',
-      activeBoard: null,
-      lastMove: null,
-      winner: null,
-      lastMovePlayer: false,
-      moves: []
-    }
+    this.gameStateHistorySubject.next([]);
+    this.currentMoveDisplayedSubject.next(0);
   }
 
   isBoardCompleted(b: string[][][], big: number): boolean {
@@ -69,6 +94,19 @@ export class GameStateService {
 
   getMiniBoardWinner(b: string[][][], big: number): string | null {
     return this.getWinningLine(b[big]);
+  }
+
+  private createStartState(): GameState {
+    return {
+      currentMove: 0,
+      board: this.createEmptyBoard(),
+      currentPlayer: 'X',
+      activeBoard: null,
+      lastMove: null,
+      winner: null,
+      lastMovePlayer: false,
+      moves: []
+    }
   }
 
   private canMove(board: string[][][], big: number, row: number, col: number, activeBoard: number | null): boolean {
