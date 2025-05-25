@@ -10,20 +10,28 @@
 
   <!-- Moves Tab Content -->
   <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
-    <div class="moves-grid">
-      <div class="player-column">
-        <h4>Cross</h4>
-        <ul class="move-list">
-          <li *ngFor="let move of player1Moves">{{ move }}</li>
-        </ul>
-      </div>
-      <div class="player-column">
-        <h4>Circle</h4>
-        <ul class="move-list">
-          <li *ngFor="let move of player2Moves">{{ move }}</li>
-        </ul>
-      </div>
-    </div>
+    <table class="moves-table">
+      <thead>
+      <tr>
+        <th>Cross</th>
+        <th>Circle</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let i of maxMovesArray()">
+        <td>
+          <span *ngIf="player1Moves[i]">
+            <strong>{{ i + 1 }}.</strong> <span class="coord">{{ player1Moves[i] }}</span>
+          </span>
+        </td>
+        <td>
+          <span *ngIf="player2Moves[i]">
+            <span class="coord">{{ player2Moves[i] }}</span>
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
 
     <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
       Clear Board

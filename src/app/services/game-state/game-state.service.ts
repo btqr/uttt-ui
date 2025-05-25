@@ -31,7 +31,7 @@ export class GameStateService {
 
     const rowStr = Math.floor(big/3) * 3 + Math.floor((row * 3 + col)/3);
     const columnStr = big%3 * 3 + (row * 3 + col)%3;
-    moves.push(rowStr + ' ' + columnStr);
+    moves.push(rowStr + '-' + columnStr);
 
     const newState: GameState = {
       ...state,

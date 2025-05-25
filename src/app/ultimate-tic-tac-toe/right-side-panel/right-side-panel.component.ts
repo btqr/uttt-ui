@@ -40,6 +40,11 @@ export class RightSidePanelComponent implements OnInit {
     });
   }
 
+  maxMovesArray(): number[] {
+    const maxLength = Math.max(this.player1Moves.length, this.player2Moves.length);
+    return Array.from({ length: maxLength }, (_, i) => i);
+  }
+
   onSettingsChange(): void {
     console.log('Thinking time changed:', this.settings.thinkingTime);
     this.settingsService.updateSettings(this.settings);
