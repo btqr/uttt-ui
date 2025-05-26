@@ -18,7 +18,7 @@ export class GameStateService {
     this.gameStateSubject = new BehaviorSubject<GameState>(this.createStartState());
     this.gameState$ = this.gameStateSubject.asObservable();
 
-    this.gameStateHistorySubject = new BehaviorSubject<GameState[]>([]);
+    this.gameStateHistorySubject = new BehaviorSubject<GameState[]>([this.gameStateSubject.getValue()]);
     this.gameStateHistory$ = this.gameStateHistorySubject.asObservable();
 
     this.currentMoveDisplayedSubject = new BehaviorSubject(0);
@@ -74,6 +74,7 @@ export class GameStateService {
     const currentMove = this.currentMoveDisplayedSubject.getValue() - 1;
     const gameState = this.gameStateHistorySubject.getValue()
       .find(gameState => gameState.currentMove == currentMove);
+
     if (gameState == undefined) {
       throw new Error("Game state not found!");
     }
@@ -84,7 +85,7 @@ export class GameStateService {
 
   clearBoard(): void {
     this.gameStateSubject.next(this.createStartState());
-    this.gameStateHistorySubject.next([]);
+    this.gameStateHistorySubject.next([this.gameStateSubject.getValue()]);
     this.currentMoveDisplayedSubject.next(0);
   }
 

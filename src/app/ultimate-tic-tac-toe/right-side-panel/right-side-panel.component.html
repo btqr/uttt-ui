@@ -40,7 +40,7 @@
     </div>
 
     <div class="button-row">
-      <button (click)="onUndo()" class="undo-btn" aria-label="Undo">
+      <button (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled] = "moves.length < 1">
         <i class="bi bi-arrow-left"></i>
       </button>
 
