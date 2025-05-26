@@ -1,46 +1,48 @@
 <div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
 
+
   <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">&times;</button>
+  <div class="content-wrapper">
 
+    <div class="tabs">
+      <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">Moves</button>
+      <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">Settings</button>
+    </div>
 
-  <div class="tabs">
-    <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">Moves</button>
-    <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">Settings</button>
-  </div>
-
-  <!-- Moves Tab Content -->
-  <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
-    <div class="table-scroll-container" #scrollContainer>
-      <table class="moves-table">
-        <thead>
-        <tr>
-          <th class="move-number-header">#</th>
-          <th>Cross</th>
-          <th>Circle</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let i of maxMovesArray()">
-          <td class="move-number-cell">
-            <strong>{{ i + 1 }}.</strong>
-          </td>
-          <td>
+    <!-- Moves Tab Content -->
+    <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
+      <div class="table-scroll-container" #scrollContainer>
+        <table class="moves-table">
+          <thead>
+          <tr>
+            <th class="move-number-header">#</th>
+            <th>Cross</th>
+            <th>Circle</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let i of maxMovesArray()">
+            <td class="move-number-cell">
+              <strong>{{ i + 1 }}.</strong>
+            </td>
+            <td>
           <span *ngIf="player1Moves[i]">
             <span class="coord">{{ player1Moves[i] }}</span>
           </span>
-          </td>
-          <td>
+            </td>
+            <td>
           <span *ngIf="player2Moves[i]">
             <span class="coord">{{ player2Moves[i] }}</span>
           </span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="button-row">
-      <button (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled] = "moves.length < 1">
+    <div *ngIf="activeTab === 'moves'" class="button-row">
+      <button (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled]="moves.length < 1">
         <i class="bi bi-arrow-left"></i>
       </button>
 
@@ -49,36 +51,37 @@
       </button>
     </div>
 
-  </div>
+    <!-- Settings Tab Content -->
+    <div *ngIf="activeTab === 'settings'" class="settings-tab tab-content">
+      <h3>Engine Settings</h3>
 
-  <!-- Settings Tab Content -->
-  <div *ngIf="activeTab === 'settings'" class="settings-tab tab-content">
-    <h3>Engine Settings</h3>
+      <label for="thinkingTime" style="margin-bottom:-5px; display:block;">
+        Thinking Time (ms): {{settings.thinkingTime}}
+      </label>
+      <input
+        id="thinkingTime"
+        type="range"
+        min="100"
+        max="1000"
+        step="100"
+        [(ngModel)]="settings.thinkingTime"
+        (input)="onSettingsChange()"
+        style="margin-top:2px; display:block;"
+      />
 
-    <label for="thinkingTime" style="margin-bottom:-5px; display:block;">
-      Thinking Time (ms): {{settings.thinkingTime}}
-    </label>
-    <input
-      id="thinkingTime"
-      type="range"
-      min="100"
-      max="1000"
-      step="100"
-      [(ngModel)]="settings.thinkingTime"
-      (input)="onSettingsChange()"
-      style="margin-top:2px; display:block;"
-    />
+      <label>
+        <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()"
+               style="margin-top:15px"/> Show Eval
+      </label>
 
-    <label>
-      <input type="checkbox" [(ngModel)]="settings.showEval" (ngModelChange)="onSettingsChange()" style="margin-top:15px"/> Show Eval
-    </label>
+      <label>
+        <input type="checkbox" [(ngModel)]="settings.showVisits" (ngModelChange)="onSettingsChange()"/> Show Visits
+      </label>
 
-    <label>
-      <input type="checkbox" [(ngModel)]="settings.showVisits" (ngModelChange)="onSettingsChange()" /> Show Visits
-    </label>
-
-    <label>
-      <input type="checkbox" [(ngModel)]="settings.playVsAi" (ngModelChange)="onSettingsChange()" /> AI moves automatically
-    </label>
+      <label>
+        <input type="checkbox" [(ngModel)]="settings.playVsAi" (ngModelChange)="onSettingsChange()"/> AI moves
+        automatically
+      </label>
+    </div>
   </div>
 </div>
