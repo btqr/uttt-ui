@@ -14,7 +14,7 @@
 
   @media (max-width: 768px) {
     width: 90vw; /* Make it take full width of parent */
-    height: 70vw; /* Make it take full height of parent */
+    height: 80vw; /* Make it take full height of parent */
   }
 
   &.collapsed {
@@ -113,6 +113,8 @@
 
 .tabs {
   display: flex;
+  position: relative;
+  z-index: 10;
   gap: 0;
   //border-bottom: 1px solid #ccc;
   margin-bottom: 1rem;
@@ -121,6 +123,8 @@
   overflow-y: auto;
   max-height: 300px;
 }
+
+
 
 .tabs button {
   flex: 1;
@@ -131,6 +135,10 @@
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s;
+
+  @media (max-width: 768px) {
+    min-height: 32px;
+  }
 }
 
 .tabs button.active {
@@ -144,6 +152,8 @@
 .tab-content {
   display: flex;
   gap: 1rem;
+  z-index: 1;         /* keep behind tabs */
+  position: relative; /* ensure stacking context */
 }
 
 .tabs button:first-child {
