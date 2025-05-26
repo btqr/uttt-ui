@@ -54,8 +54,8 @@
                   <ng-container *ngIf="gameState.winner == null && !(getMove(big, row, col)) && isMovePossible(big, row, col)">
                     <div  class="engine-data" [class.bad]="true">
                       <small>
-                        <span class="eval">-1.00</span><br>
-                        <span class="visits">0</span>
+                        <span class="eval" *ngIf="settings?.showEval">-1.00</span><br>
+                        <span class="visits" *ngIf="settings?.showVisits">0</span>
                       </small>
                     </div>
                   </ng-container>
