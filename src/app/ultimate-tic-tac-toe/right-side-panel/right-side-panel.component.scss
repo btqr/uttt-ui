@@ -3,7 +3,6 @@
   display: flex;
   width: 350px;
   padding: 16px;
-  height: 450px;
   background-color: #fff;
   flex-direction: column;
   border-radius: 8px;
@@ -214,8 +213,13 @@
 }
 
 /* Row banding and hover */
-.moves-table tbody tr:nth-child(even) {
-  background-color: #f6f6f6;
+.moves-table tbody tr {
+  background-color: white; /* Or any single color you want */
+  border-bottom: 1px solid #ccc; /* Light gray line separating rows */
+}
+
+.moves-table tbody tr:last-child {
+  border-bottom: none; /* No border after the last row */
 }
 
 .moves-table tbody tr:hover {

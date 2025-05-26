@@ -42,11 +42,11 @@
     </div>
 
     <div *ngIf="activeTab === 'moves'" class="button-row">
-      <button (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled]="moves.length < 1">
+      <button matTooltip="You can also press left arrow to undo last move." (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled]="moves.length < 1">
         <i class="bi bi-arrow-left"></i>
       </button>
 
-      <button (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
+      <button matTooltip="You can also press 'c' to clear the board." (click)="onClearBoard()" class="clear-btn" aria-label="Clear board">
         Clear Board
       </button>
     </div>

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild} from '@angular/core';
 import {Settings} from '../../services/settings/settings.model';
 import {FormsModule} from '@angular/forms';
 import {SettingsService} from '../../services/settings/settings.service';
@@ -7,6 +7,8 @@ import {GameStateService} from '../../services/game-state/game-state.service';
 import {MatSlider, MatSliderModule} from '@angular/material/slider';
 import {NgxSliderModule} from '@angular-slider/ngx-slider';
 import {NouisliderComponent} from 'ng2-nouislider';
+import {MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'right-side-panel',
@@ -18,7 +20,9 @@ import {NouisliderComponent} from 'ng2-nouislider';
     MatSliderModule,
     MatSlider,
     NgxSliderModule,
-    NouisliderComponent
+    NouisliderComponent,
+    MatButton,
+    MatTooltip
   ],
   styleUrls: ['./right-side-panel.component.scss']
 })
@@ -44,7 +48,7 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   maxMovesArray(): number[] {
-    const maxLength = Math.max(this.player1Moves.length, this.player2Moves.length);
+    const maxLength = Math.max(7, Math.max(this.player1Moves.length, this.player2Moves.length));
     this.scrollToBottom();
     return Array.from({ length: maxLength }, (_, i) => i);
   }
@@ -84,4 +88,18 @@ export class RightSidePanelComponent implements OnInit {
   get player2Moves(): string[] {
     return this.moves.filter((_, index) => index % 2 === 1); // Odd indexes
   }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowLeft':
+        this.onUndo();
+        break;
+      case 'c':
+        this.clearBoard.emit();
+        break;
+    }
+  }
+
+  protected readonly Math = Math;
 }
