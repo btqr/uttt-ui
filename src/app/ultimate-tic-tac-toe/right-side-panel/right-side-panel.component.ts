@@ -9,6 +9,8 @@ import {NgxSliderModule} from '@angular-slider/ngx-slider';
 import {NouisliderComponent} from 'ng2-nouislider';
 import {MatButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
+import {ChartPanelComponent} from '../chart-panel/chart-panel.component';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'right-side-panel',
@@ -22,7 +24,9 @@ import {MatTooltip} from '@angular/material/tooltip';
     NgxSliderModule,
     NouisliderComponent,
     MatButton,
-    MatTooltip
+    MatTooltip,
+    ChartPanelComponent,
+    MatIcon
   ],
   styleUrls: ['./right-side-panel.component.scss']
 })

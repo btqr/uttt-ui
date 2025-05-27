@@ -5,8 +5,12 @@
   <div class="content-wrapper">
 
     <div class="tabs">
-      <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">Moves</button>
-      <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">Settings</button>
+      <button [class.active]="activeTab === 'moves'" (click)="setTab('moves')">
+        <mat-icon style="margin-bottom: -7px; font-size: 20px;">description</mat-icon> Moves
+      </button>
+      <button [class.active]="activeTab === 'settings'" (click)="setTab('settings')">
+        <mat-icon style="margin-bottom: -7px; font-size: 20px;">tune</mat-icon>Settings
+      </button>
     </div>
 
     <!-- Moves Tab Content -->
@@ -42,6 +46,7 @@
     </div>
 
     <div *ngIf="activeTab === 'moves'" class="button-row">
+
       <button matTooltip="You can also press left arrow to undo last move." (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled]="moves.length < 1">
         <i class="bi bi-arrow-left"></i>
       </button>

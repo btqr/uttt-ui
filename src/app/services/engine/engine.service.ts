@@ -19,24 +19,56 @@ export class EngineService {
 
   private analysisResultSubject = new BehaviorSubject<AnalysisResult | null>(null);
   private engineInitializedSubject = new BehaviorSubject<boolean>(false);
+  private evalHistorySubject = new BehaviorSubject<number[]>([]);
 
   public analysisResult$: Observable<AnalysisResult | null>;
   public engineInitialized$ = this.engineInitializedSubject.asObservable();
+  public evalHistory$: Observable<number[]>;
 
   constructor(private gameStateService: GameStateService, private settingsService: SettingsService) {
     (window as any).returnInfo = (result: any) => {
-      this.analysisResultSubject.next(this.parseEngineOutput(result));
+      const parsedResult = this.parseEngineOutput(result);
+      this.analysisResultSubject.next(parsedResult);
     };
     this.analysisResult$ = this.analysisResultSubject.asObservable();
 
-    this.init().then(() => {
+
+    this.init()
+      .then(() => {
       this.gameStateService.gameState$
         .pipe(withLatestFrom(this.settingsService.settings$))
         .subscribe(([gameState, settings]: [GameState, Settings]) => {
           this.analyze(gameState.board, gameState.activeBoard, gameState.currentPlayer, settings.thinkingTime,
             settings.playVsAi && gameState.lastMovePlayer);
         });
-    });
+    }).then(() => {
+      this.analysisResult$
+        .pipe(withLatestFrom(this.gameStateService.currentMoveDisplayed$))
+        .subscribe(([analysisResult, move]: [AnalysisResult | null, number]) => {
+          if (!analysisResult) return; // 🚫 Skip if null
+
+          const evals = [...this.evalHistorySubject.getValue()];
+
+          if (move >= 0) {
+            if (move < evals.length) {
+              if (move%2 == 1) {
+                evals[move] = -analysisResult.bestEval;
+              } else {
+                evals[move] = analysisResult.bestEval;
+              }
+            } else {
+              if (move%2 == 1) {
+                evals.push(-analysisResult.bestEval);
+              } else {
+                evals.push(analysisResult.bestEval);
+              }
+            }
+          }
+          console.log("Test");
+          this.evalHistorySubject.next(evals);
+        });
+    })
+    this.evalHistory$ = this.evalHistorySubject.asObservable();
   }
 
   private async init(): Promise<void> {
@@ -164,7 +196,7 @@ export class EngineService {
 
     let maxVisits = 0;
     let allEvals = []
-    if (lines[0] == '') return {moves, maxVisits: 0, evalThreshold: 0};
+    if (lines[0] == '') return {moves, maxVisits: 0, evalThreshold: 0, bestEval: 0};
 
     for (const line of lines) {
       const [indexStr, visitsStr, scoreStr] = line.trim().split(/\s+/);
@@ -193,7 +225,7 @@ export class EngineService {
     let threshold: number | null = allEvals.length > 0 ? allEvals[index] : 0;
     // let threshold = 0;
 
-    return {moves, maxVisits: maxVisits, evalThreshold: threshold};
+    return {moves, maxVisits: maxVisits, evalThreshold: threshold, bestEval: allEvals[0]};
   }
 }
 
