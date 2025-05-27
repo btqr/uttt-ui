@@ -43,13 +43,14 @@ export class RightSidePanelComponent implements OnInit {
     });
     this.gameStateService.gameState$.subscribe(gameState => {
       this.moves = gameState.moves;
-      this.scrollToBottom();
     });
   }
 
   maxMovesArray(): number[] {
     const maxLength = Math.max(7, Math.max(this.player1Moves.length, this.player2Moves.length));
-    this.scrollToBottom();
+    if (Math.max(this.player1Moves.length, this.player2Moves.length) > 4) {
+      this.scrollToBottom();
+    }
     return Array.from({ length: maxLength }, (_, i) => i);
   }
 
