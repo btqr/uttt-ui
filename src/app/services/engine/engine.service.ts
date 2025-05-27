@@ -64,7 +64,6 @@ export class EngineService {
               }
             }
           }
-          console.log("Test");
           this.evalHistorySubject.next(evals);
         });
     })
