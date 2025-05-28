@@ -186,16 +186,6 @@
   overflow-y: auto;
 }
 
-.table-scroll-container {
-  max-height: 400px; /* Adjust this value as desired. The table will scroll if its content exceeds this height. */
-  overflow-y: auto;  /* Enables vertical scrolling when content overflows */
-  overflow-x: hidden;  /* Enables vertical scrolling when content overflows */
-  /* Optional: Add a subtle border around the scrollable area for visual clarity */
-  //border: 1px solid #e0e0e0;
-  //border-radius: 4px;
-  //margin-top: 1em; /* Adjust to provide spacing from elements above */
-}
-
 .moves-tab {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -320,12 +310,6 @@ strong {
 @media (max-width: 1200px) { /* Adjust max-width breakpoint as needed for typical mobile devices */
   .settings-panel {
     max-height: 470px;
-  }
-
-  .table-scroll-container {
-    //max-height: 300px; /* Reduce max height of the table on smaller screens */
-    /* You might want to remove the border on mobile for cleaner look if desired */
-    /* border: none; */
   }
 
   /* Optional: Adjust table padding/font-size for better mobile fit */
