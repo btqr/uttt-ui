@@ -16,7 +16,7 @@
 
     <!-- Moves Tab Content -->
     <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
-      <div class="table-scroll-container" #scrollContainer>
+      <div class="table-wrapper">
         <table class="moves-table">
           <thead>
           <tr>
@@ -25,24 +25,26 @@
             <th>Circle</th>
           </tr>
           </thead>
-          <tbody>
-          <tr *ngFor="let i of maxMovesArray()">
-            <td class="move-number-cell">
-              <strong>{{ i + 1 }}.</strong>
-            </td>
-            <td>
-          <span *ngIf="player1Moves[i]">
-            <span class="coord">{{ player1Moves[i] }}</span>
-          </span>
-            </td>
-            <td>
-          <span *ngIf="player2Moves[i]">
-            <span class="coord">{{ player2Moves[i] }}</span>
-          </span>
-            </td>
-          </tr>
-          </tbody>
         </table>
+        <div class="table-body-wrapper">
+          <table class="moves-table">
+            <tbody>
+            <tr *ngFor="let i of maxMovesArray()">
+              <td class="move-number-cell"><strong>{{ i + 1 }}.</strong></td>
+              <td>
+              <span *ngIf="player1Moves[i]">
+                <span class="coord">{{ player1Moves[i] }}</span>
+              </span>
+              </td>
+              <td>
+              <span *ngIf="player2Moves[i]">
+                <span class="coord">{{ player2Moves[i] }}</span>
+              </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

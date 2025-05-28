@@ -172,6 +172,20 @@
   border-right: 1px solid #ccc; /* vertical separator */
 }
 
+.table-wrapper {
+  width: 100%;
+}
+
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-body-wrapper {
+  max-height: 360px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
 .table-scroll-container {
   max-height: 400px; /* Adjust this value as desired. The table will scroll if its content exceeds this height. */
   overflow-y: auto;  /* Enables vertical scrolling when content overflows */
@@ -189,6 +203,7 @@
   //overflow: hidden;             /* Ensures sticky header doesn't break the rounding */
   //box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
   overflow: hidden;
+
 }
 
 /* Existing table styles (ensure they don't conflict with the new container) */
@@ -217,11 +232,12 @@
 
 /* Specific styling for the Move Number header and cell */
 .move-number-header {
-  width: 10%; /* Keep this width for the number column */
+  width: 10%;/* Keep this width for the number column */
   text-align: center;
 }
 
 .move-number-cell {
+  width: 10%;
   text-align: center;
   font-size: 0.95rem;
   color: #555;
@@ -235,7 +251,6 @@
   font-size: 0.85rem;
   border-top: 1px solid #ccc;
   border-right: 1px solid #ccc;
-
   color: #555;
 }
 
