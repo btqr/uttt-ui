@@ -47,7 +47,12 @@ export class EngineService {
         .subscribe(([analysisResult, move]: [AnalysisResult | null, number]) => {
           if (!analysisResult) return; // 🚫 Skip if null
 
-          const evals = [...this.evalHistorySubject.getValue()];
+          let evals = [...this.evalHistorySubject.getValue()];
+          if (move > 0) {
+            evals = evals.slice(0, move - 1);
+          } else {
+            evals = []
+          }
 
           if (move >= 0) {
             if (move < evals.length) {

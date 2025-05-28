@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EngineService} from '../../services/engine/engine.service';
-import {LineChartModule} from '@swimlane/ngx-charts';
+import {Color, LineChartModule, ScaleType} from '@swimlane/ngx-charts';
+import { curveBasis } from 'd3-shape';
 
 
 @Component({
@@ -16,8 +17,12 @@ export class ChartPanelComponent implements OnInit {
 
   evalHistory: number[] = [];
   evalAsDataSeries: any[] = [];
-  colorScheme = {
-    domain: ['#2196f3'] // Single line: evaluation score
+  curve = curveBasis;
+  colorScheme: Color = {
+    name: 'customScheme',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#007bff']
   };
 
   constructor(private engineService: EngineService) {
@@ -31,6 +36,9 @@ export class ChartPanelComponent implements OnInit {
   }
 
   getEvalAsDataSeries(): any[] {
+    if (this.evalHistory.length == 0) {
+      return [];
+    }
     let mapped = this.evalHistory.map((value, index) => ({
       name: (index + 1).toString(),
       value: value

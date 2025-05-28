@@ -1,4 +1,5 @@
-<div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible">
+<div class="settings-panel" [class.collapsed]="!settings.isSettingsVisible"
+     [class.moves-tab-active]="activeTab === 'moves'">
 
 
   <button class="toggle-btn" (click)="toggleSettings()" aria-label="Toggle settings">&times;</button>
@@ -45,7 +46,10 @@
       </div>
     </div>
 
-    <div *ngIf="activeTab === 'moves'" class="button-row">
+  <div class="lower-panel" *ngIf="activeTab === 'moves'">
+    <chart-panel ></chart-panel>
+
+    <div class="button-row">
 
       <button matTooltip="You can also press left arrow to undo last move." (click)="onUndo()" class="undo-btn" aria-label="Undo" [disabled]="moves.length < 1">
         <i class="bi bi-arrow-left"></i>
@@ -55,6 +59,7 @@
         Clear Board
       </button>
     </div>
+  </div>
 
     <!-- Settings Tab Content -->
     <div *ngIf="activeTab === 'settings'" class="settings-tab tab-content">

@@ -15,7 +15,7 @@
   overflow-y: hidden;
   padding-bottom: 5px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     flex-direction: column;   // stack vertically
     align-items: center;      // center horizontally
     justify-content: center;  // center vertically if height allows
@@ -23,12 +23,12 @@
 }
 
 .board-wrapper {
-  width: 650px;
+  width: 750px;
   display: flex;
   justify-content: center;
   position: relative;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     width: 90vw;
     height: 90vw;
   }
@@ -45,8 +45,8 @@
 
 /* Grid layout for the mini-boards */
 .mat-grid-list {
-  width: 650px;
-  height: 650px;
+  width: 750px;
+  height: 750px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -55,7 +55,7 @@
   margin-left: auto;
   margin-right: auto;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     width: 90vw; /* Make it take full width of parent */
     height: 90vw; /* Make it take full height of parent */
   }
@@ -189,7 +189,7 @@
   border: none;
   outline: none;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     font-size: clamp(5px, 4vw, 15px);
     /* Minimum 10px, scales up to 15px max, depending on viewport width */
   }
@@ -214,7 +214,7 @@
   opacity: 1.0;
   padding: 2px 4px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     font-size: clamp(10px, 4vw, 22px);
     /* Minimum 10px, scales up to 15px max, depending on viewport width */
   }
@@ -264,11 +264,11 @@
   z-index: 10;
   text-transform: uppercase;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     font-size: clamp(10rem, 4vw, 16rem);
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 1200px) {
     font-size: clamp(8rem, 4vw, 10rem);
   }
 }

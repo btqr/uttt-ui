@@ -1,14 +1,20 @@
-<div style="border: 1px solid #ccc; padding: 8px; border-radius: 4px;">
+<div class="eval-chart-container">
   <ngx-charts-line-chart
-    [view]="[350, 145]"
+    [view]="[345, 170]"
+    [scheme]="colorScheme"
     [results]="evalAsDataSeries"
+    [curve]="curve"
     [yAxis]="true"
     [xAxis]="true"
+    [showGridLines]="true"
     [legend]="false"
-    [autoScale]="true"
-    [animations]="false"
+    [animations]="true"
     [tooltipDisabled]="false"
     [yScaleMin]="-1"
-    [yScaleMax]="1">
+    [yScaleMax]="1"
+    [xAxisLabel]="'Move Number'"
+    [yAxisLabel]="'Eval (−1 to +1)'"
+    [autoScale]="false"
+  >
   </ngx-charts-line-chart>
 </div>

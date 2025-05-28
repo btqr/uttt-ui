@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 import {Settings} from '../../services/settings/settings.model';
 import {FormsModule} from '@angular/forms';
 import {SettingsService} from '../../services/settings/settings.service';
@@ -11,6 +11,7 @@ import {MatButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ChartPanelComponent} from '../chart-panel/chart-panel.component';
 import {MatIcon} from '@angular/material/icon';
+import {timeout} from 'rxjs';
 
 @Component({
   selector: 'right-side-panel',
@@ -38,6 +39,7 @@ export class RightSidePanelComponent implements OnInit {
   @ViewChild('scrollContainer') private scrollContainerRef!: ElementRef
 
   activeTab: 'moves' | 'settings' = 'moves';
+  lastLengthWhenScrolled = -1;
 
   constructor(private settingsService: SettingsService, private gameStateService: GameStateService) {}
 
@@ -51,9 +53,13 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   maxMovesArray(): number[] {
-    const maxLength = Math.max(7, Math.max(this.player1Moves.length, this.player2Moves.length));
-    if (Math.max(this.player1Moves.length, this.player2Moves.length) > 4) {
-      this.scrollToBottom();
+    const maxMoves = Math.max(this.player1Moves.length, this.player2Moves.length);
+    const maxLength = Math.max(10, maxMoves);
+    if (maxMoves > 4) {
+      if (this.lastLengthWhenScrolled != this.moves.length) {
+        setTimeout(() => this.scrollToBottom());
+        this.lastLengthWhenScrolled = this.moves.length;
+      }
     }
     return Array.from({ length: maxLength }, (_, i) => i);
   }

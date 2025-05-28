@@ -1,0 +1,26 @@
+.eval-chart-container {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  background: #fafafa;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+::ng-deep ngx-charts-line-chart svg {
+  overflow: visible !important;
+}
+
+::ng-deep ngx-charts-line-chart .chart {
+  /* Shift the chart lines and points left */
+  transform: translate(40px, 10px) !important;
+}
+
+
+@media (max-width: 1200px) {
+  .eval-chart-container {
+    display: none;
+  }
+}
