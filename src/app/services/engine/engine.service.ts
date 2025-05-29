@@ -43,9 +43,15 @@ export class EngineService {
         });
     }).then(() => {
       this.analysisResult$
-        .pipe(withLatestFrom(this.gameStateService.currentMoveDisplayed$))
-        .subscribe(([analysisResult, move]: [AnalysisResult | null, number]) => {
+        .pipe(withLatestFrom(this.gameStateService.gameStateHistory$, this.gameStateService.currentMoveDisplayed$))
+        .subscribe(([analysisResult, history, currentMove]: [AnalysisResult | null, GameState[], number]) => {
           if (!analysisResult) return; // 🚫 Skip if null
+
+          const move = currentMove;
+
+          if (currentMove + 1 < history.length) {
+            return;
+          }
 
           let evals = [...this.evalHistorySubject.getValue()];
           if (move > 0) {
@@ -55,13 +61,7 @@ export class EngineService {
           }
 
           if (move >= 0) {
-            if (move < evals.length) {
-              if (move%2 == 1) {
-                evals[move] = -analysisResult.bestEval;
-              } else {
-                evals[move] = analysisResult.bestEval;
-              }
-            } else {
+            if (move >= evals.length) {
               if (move%2 == 1) {
                 evals.push(-analysisResult.bestEval);
               } else {
