@@ -83,6 +83,48 @@ export class GameStateService {
     this.currentMoveDisplayedSubject.next(currentMove);
   }
 
+  changeCurrentMoveTo(move: number) {
+    const history = this.gameStateHistorySubject.getValue();
+    if (move >= history.length) {
+      return;
+    }
+    const state = history[move];
+
+    this.gameStateSubject.next(state);
+    this.currentMoveDisplayedSubject.next(move);
+  }
+
+  goToStart() {
+    const history = this.gameStateHistorySubject.getValue();
+    if (history.length <= 0) {
+      return;
+    }
+    const state = history[0];
+
+    this.gameStateSubject.next(state);
+    this.currentMoveDisplayedSubject.next(0);
+  }
+
+  goToEnd() {
+    const history = this.gameStateHistorySubject.getValue();
+    const state = history[history.length - 1];
+
+    this.gameStateSubject.next(state);
+    this.currentMoveDisplayedSubject.next(history.length - 1);
+  }
+
+  goToNext() {
+    const history = this.gameStateHistorySubject.getValue();
+    const currentMove = this.currentMoveDisplayedSubject.getValue();
+    if (currentMove >= history.length) {
+      return;
+    }
+    const state = history[currentMove + 1];
+
+    this.gameStateSubject.next(state);
+    this.currentMoveDisplayedSubject.next(currentMove + 1);
+  }
+
   clearBoard(): void {
     this.gameStateSubject.next(this.createStartState());
     this.gameStateHistorySubject.next([this.gameStateSubject.getValue()]);

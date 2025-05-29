@@ -48,8 +48,8 @@ export class RightSidePanelComponent implements OnInit {
     this.settingsService.settings$.subscribe(settings => {
       this.settings = { ...settings };
     });
-    this.gameStateService.gameState$.subscribe(gameState => {
-      this.moves = gameState.moves;
+    this.gameStateService.gameStateHistory$.subscribe(gameStateHistory => {
+      this.moves = gameStateHistory[gameStateHistory.length - 1].moves;
     });
     this.gameStateService.currentMoveDisplayed$.subscribe(currentMove => {
       this.currentMove = currentMove;
@@ -100,10 +100,6 @@ export class RightSidePanelComponent implements OnInit {
     this.activeTab = tab;
   }
 
-  onUndo() {
-    this.gameStateService.undoMove();
-  }
-
   get player1Moves(): string[] {
     return this.moves.filter((_, index) => index % 2 === 0); // Even indexes
   }
@@ -118,6 +114,9 @@ export class RightSidePanelComponent implements OnInit {
       case 'ArrowLeft':
         this.onUndo();
         break;
+      case 'ArrowRight':
+        this.onNext();
+        break;
       case 'c':
         this.clearBoard.emit();
         break;
@@ -125,4 +124,37 @@ export class RightSidePanelComponent implements OnInit {
   }
 
   protected readonly Math = Math;
+
+  onMoveClick(moveOfPlayer: number, player: string) {
+    const move = player == 'player1' ? moveOfPlayer * 2 + 1 : moveOfPlayer * 2 + 2;
+    this.gameStateService.changeCurrentMoveTo(move);
+  }
+
+  onGoToStart() {
+    if (this.currentMove <= 0) {
+      return;
+    }
+    this.gameStateService.goToStart();
+  }
+
+  onGoToEnd() {
+    if (this.currentMove + 1 > this.moves.length) {
+      return;
+    }
+    this.gameStateService.goToEnd();
+  }
+
+  onUndo() {
+    if (this.currentMove <= 0) {
+      return;
+    }
+    this.gameStateService.undoMove();
+  }
+
+  onNext() {
+    if (this.currentMove + 1 > this.moves.length) {
+      return;
+    }
+    this.gameStateService.goToNext();
+  }
 }
