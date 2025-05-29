@@ -198,6 +198,7 @@
 
 /* Existing table styles (ensure they don't conflict with the new container) */
 .moves-table {
+  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
