@@ -31,14 +31,12 @@ export class UltimateTicTacToeComponent {
               private gameStateService: GameStateService) {
     this.gameStateService.gameState$.subscribe(gameState => {
       this.gameState = gameState
-      // console.log(gameState);
     });
     this.settingsService.settings$.subscribe(settings => {
       this.settings = settings;
     })
     engine.analysisResult$.subscribe(result => {
       this.analysisResult = result;
-      // console.log(result);
     });
   }
 

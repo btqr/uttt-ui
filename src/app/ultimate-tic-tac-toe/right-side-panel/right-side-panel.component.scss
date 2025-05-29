@@ -308,6 +308,10 @@ strong {
   background-color: #0b5ed7;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 @media (max-width: 1200px) { /* Adjust max-width breakpoint as needed for typical mobile devices */
   .settings-panel {
     max-height: 470px;

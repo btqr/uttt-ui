@@ -34,6 +34,7 @@ import {timeout} from 'rxjs';
 export class RightSidePanelComponent implements OnInit {
   settings!: Settings;
   moves: string[] = [];
+  currentMove!: number;
   @Output() clearBoard = new EventEmitter<void>();
 
   @ViewChild('scrollContainer') private scrollContainerRef!: ElementRef
@@ -49,6 +50,9 @@ export class RightSidePanelComponent implements OnInit {
     });
     this.gameStateService.gameState$.subscribe(gameState => {
       this.moves = gameState.moves;
+    });
+    this.gameStateService.currentMoveDisplayed$.subscribe(currentMove => {
+      this.currentMove = currentMove;
     });
   }
 
@@ -68,6 +72,14 @@ export class RightSidePanelComponent implements OnInit {
     if (this.scrollContainerRef) {
       // Set the scroll position to the maximum possible height
       this.scrollContainerRef.nativeElement.scrollTop = this.scrollContainerRef.nativeElement.scrollHeight;
+    }
+  }
+
+  isCurrentMove(player1Move: boolean, moveNumber: number): boolean {
+    if (player1Move) {
+      return this.currentMove%2 == 1 && moveNumber*2 + 1 == this.currentMove;
+    } else {
+      return this.currentMove%2 == 0 && (moveNumber*2) + 2 == this.currentMove;
     }
   }
 
