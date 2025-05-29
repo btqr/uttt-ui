@@ -52,8 +52,18 @@ export class ChartPanelComponent implements OnInit {
         responsive: true,
         scales: {
           y: {
-            min: -1,
-            max: 1,
+            min: -1.07,
+            max: 1.07,
+            ticks: {
+              stepSize: 0.5,
+              callback: function (value: number) {
+                // Only show labels at -1, 0, and 1
+                if (value === -1.07 || value === 0 || value === 1.07) {
+                  return value.toFixed(0); // or just `return value;`
+                }
+                return '';
+              }
+            }
           },
           x: {
             title: {
