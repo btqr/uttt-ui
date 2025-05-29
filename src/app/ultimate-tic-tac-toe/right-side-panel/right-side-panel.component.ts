@@ -117,7 +117,7 @@ export class RightSidePanelComponent implements OnInit {
       case 'ArrowRight':
         this.onNext();
         break;
-      case 'c':
+      case 'n':
         this.clearBoard.emit();
         break;
     }
