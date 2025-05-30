@@ -189,9 +189,6 @@
 .moves-tab {
   border: 1px solid #ccc;
   border-radius: 8px;
-  //border-radius: 8px;           /* Rounded corners */
-  //overflow: hidden;             /* Ensures sticky header doesn't break the rounding */
-  //box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
   overflow: hidden;
 
 }
@@ -209,7 +206,7 @@
 
 /* Sticky Header styling */
 .moves-table th {
-  padding: 10px 15px;
+  padding: 10px 3px;
   text-align: center;
   font-size: 1.05rem;
   font-weight: 600;
@@ -218,7 +215,10 @@
   top: 0;                     /* Sticks to the top of the scroll container */
   z-index: 1;                 /* Ensures it stays above scrolling tbody content */
   user-select: none;
-  box-shadow: inset 0 -1px 0 #d0d7de;
+  background: linear-gradient(to bottom, #f0f3f6, #d0d7de);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+  color: #333;
+  letter-spacing: 0.03em;
 }
 
 /* Specific styling for the Move Number header and cell */
@@ -228,7 +228,7 @@
 }
 
 .move-number-cell {
-  width: 10%;
+  width: 3%;
   text-align: center;
   font-size: 0.95rem;
   color: #555;
