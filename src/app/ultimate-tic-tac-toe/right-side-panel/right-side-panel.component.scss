@@ -31,8 +31,8 @@
 
 .toggle-btn {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: -3px;
+  right: -3px;
   border: none;
   background: transparent;
   font-size: 24px;
@@ -125,7 +125,10 @@
 
 .tabs {
   display: flex;
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5px;
   z-index: 10;
   gap: 0;
   //border-bottom: 1px solid #ccc;
@@ -134,9 +137,8 @@
   box-shadow: 0 1px 0 #ccc; /* optional subtle bottom shadow instead */
   overflow-y: auto;
   max-height: 300px;
+
 }
-
-
 
 .tabs button {
   flex: 1;
@@ -190,6 +192,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
+  margin-top: auto;
 
 }
 
