@@ -65,12 +65,6 @@ export class ChartPanelComponent implements OnInit {
               }
             }
           },
-          x: {
-            title: {
-              display: true,
-              text: 'Move'
-            }
-          }
         },
         plugins: {
           legend: {
