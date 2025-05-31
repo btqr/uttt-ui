@@ -74,7 +74,6 @@
 }
 
 .settings-panel h3 {
-  margin-top: 0;
   font-size: 16px;
   margin-bottom: 1rem;
   color: #333;
@@ -96,6 +95,7 @@
 .settings-panel .tab-content {
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
 }
 
 .content-wrapper {
@@ -129,14 +129,14 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 1px;
+  top: 42px;
   z-index: 10;
   gap: 0;
   background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
   max-height: 300px;
-  border-radius: 8px;
+
 
 }
 
@@ -210,6 +210,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
+  margin-top: 35px;
 }
 
 /* Existing table styles (ensure they don't conflict with the new container) */
@@ -360,4 +361,6 @@ strong {
     font-size: 0.9rem;
   }
 }
+
+
 

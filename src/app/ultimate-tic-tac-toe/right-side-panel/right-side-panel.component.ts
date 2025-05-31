@@ -12,6 +12,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 import {ChartPanelComponent} from '../chart-panel/chart-panel.component';
 import {MatIcon} from '@angular/material/icon';
 import {timeout} from 'rxjs';
+import {TopEvalPanel} from './top-eval-panel/top-eval-panel.component';
 
 @Component({
   selector: 'right-side-panel',
@@ -27,7 +28,8 @@ import {timeout} from 'rxjs';
     MatButton,
     MatTooltip,
     ChartPanelComponent,
-    MatIcon
+    MatIcon,
+    TopEvalPanel
   ],
   styleUrls: ['./right-side-panel.component.scss']
 })
