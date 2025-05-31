@@ -1,7 +1,57 @@
 <div class="custom-top-panel">
-  <span class="score">{{eval | number:'1.2-2' }}</span>
+  <span class="score">{{ eval | number:'1.2-2' }}</span>
   <div class="info">
     <span title="Ultimate Tic Tac Toe with NNUE Evaluation">UTTT NNUE</span>
     <small>in browser</small>
+  </div>
+
+  <div class="icons-right">
+    <button class="icon-btn gear-icon" title="Settings" (click)="openSettings()">
+      <i class="fas fa-cog"></i>
+    </button>
+
+    <button class="icon-btn close-icon" title="Hide Panel" (click)="toggleSettings()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" *ngIf="showSettingsModal" (click)="onCloseSettings()"></div>
+
+<!-- Modal Window -->
+<div class="modal" *ngIf="showSettingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close-btn" (click)="onCloseSettings()" aria-label="Close settings">&times;</button>
+
+    <h2 mat-dialog-title>Engine Settings</h2>
+
+    <mat-dialog-content>
+      <label for="thinkingTime" style="display:block; margin-bottom:4px;">
+        Thinking Time (ms): {{settings.thinkingTime}}
+      </label>
+      <input
+        id="thinkingTime"
+        type="range"
+        min="100"
+        max="1000"
+        step="100"
+        [(ngModel)]="settings.thinkingTime"
+        (input)="onSettingsChange()"
+        style="width: 100%; margin-bottom: 16px;"
+      />
+
+      <mat-checkbox [(ngModel)]="settings.showEval" (change)="onSettingsChange()">
+        Show Eval
+      </mat-checkbox>
+      <br />
+      <mat-checkbox [(ngModel)]="settings.showVisits" (change)="onSettingsChange()">
+        Show Visits
+      </mat-checkbox>
+      <br />
+      <mat-checkbox [(ngModel)]="settings.playVsAi" (change)="onSettingsChange()">
+        AI moves automatically
+      </mat-checkbox>
+    </mat-dialog-content>
   </div>
 </div>

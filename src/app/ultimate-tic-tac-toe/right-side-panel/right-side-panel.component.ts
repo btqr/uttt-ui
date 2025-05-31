@@ -93,11 +93,6 @@ export class RightSidePanelComponent implements OnInit {
     this.clearBoard.emit();
   }
 
-  toggleSettings(): void {
-    this.settings.isSettingsVisible = !this.settings.isSettingsVisible;
-    this.settingsService.updateSettings(this.settings);
-  }
-
   setTab(tab: 'moves' | 'settings') {
     this.activeTab = tab;
   }

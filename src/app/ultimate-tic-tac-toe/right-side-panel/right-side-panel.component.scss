@@ -95,7 +95,7 @@
 .settings-panel .tab-content {
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
+  margin-top: auto;
 }
 
 .content-wrapper {
@@ -104,7 +104,6 @@
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  padding-top: 50px;
 }
 
 .clear-btn {
@@ -171,6 +170,7 @@
   color: #3f51b5;
   background-color: #e8ecff;
   box-shadow: 0 4px 8px rgba(63, 81, 181, 0.15);
+
 }
 
 @media (max-width: 1200px) {
@@ -210,7 +210,7 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
-  margin-top: 35px;
+  margin-top: auto;
 }
 
 /* Existing table styles (ensure they don't conflict with the new container) */
