@@ -85,16 +85,8 @@ export class RightSidePanelComponent implements OnInit {
     }
   }
 
-  onSettingsChange(): void {
-    this.settingsService.updateSettings(this.settings);
-  }
-
   onClearBoard(): void {
     this.clearBoard.emit();
-  }
-
-  setTab(tab: 'moves' | 'settings') {
-    this.activeTab = tab;
   }
 
   get player1Moves(): string[] {
