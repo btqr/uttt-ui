@@ -39,8 +39,6 @@ export class RightSidePanelComponent implements OnInit {
   currentMove!: number;
   @Output() clearBoard = new EventEmitter<void>();
 
-  @ViewChild('scrollContainer') private scrollContainerRef!: ElementRef
-
   activeTab: 'moves' | 'settings' = 'moves';
   lastLengthWhenScrolled = -1;
 
@@ -60,22 +58,22 @@ export class RightSidePanelComponent implements OnInit {
 
   maxMovesArray(): number[] {
     const maxMoves = Math.max(this.player1Moves.length, this.player2Moves.length);
-    const maxLength = Math.max(10, maxMoves);
+    const maxLength = Math.max(11, maxMoves);
     if (maxMoves > 4) {
       if (this.lastLengthWhenScrolled != this.moves.length) {
-        setTimeout(() => this.scrollToBottom());
+        // setTimeout(() => this.scrollToBottom());
         this.lastLengthWhenScrolled = this.moves.length;
       }
     }
     return Array.from({ length: maxLength }, (_, i) => i);
   }
 
-  private scrollToBottom(): void {
-    if (this.scrollContainerRef) {
-      // Set the scroll position to the maximum possible height
-      this.scrollContainerRef.nativeElement.scrollTop = this.scrollContainerRef.nativeElement.scrollHeight;
-    }
-  }
+  // private scrollToBottom(): void {
+  //   if (this.scrollContainerRef) {
+  //     // Set the scroll position to the maximum possible height
+  //     this.scrollContainerRef.nativeElement.scrollTop = this.scrollContainerRef.nativeElement.scrollHeight;
+  //   }
+  // }
 
   isCurrentMove(player1Move: boolean, moveNumber: number): boolean {
     if (player1Move) {
@@ -101,12 +99,15 @@ export class RightSidePanelComponent implements OnInit {
   onKeyDown(event: KeyboardEvent) {
     switch (event.key) {
       case 'ArrowLeft':
+        event.preventDefault();
         this.onUndo();
         break;
       case 'ArrowRight':
+        event.preventDefault();
         this.onNext();
         break;
       case 'n':
+        event.preventDefault();
         this.clearBoard.emit();
         break;
     }

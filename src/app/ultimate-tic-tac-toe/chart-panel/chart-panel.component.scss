@@ -4,5 +4,24 @@
   }
 }
 .eval-chart-container {
-  height: 175px;
+  padding: 8px 8px;
+  height: 220px;
+  //background: linear-gradient(90deg, #faf9f6, #e5e1d8);
+  background-color: #faf9f6;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.eval-chart-container:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Make the chart fill the container */
+.eval-chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 180px;
 }

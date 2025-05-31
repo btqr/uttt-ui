@@ -1,9 +1,9 @@
 .settings-panel {
   position: relative;
   display: flex;
-  width: 350px;
-  padding: 16px;
-  background-color: #fff;
+  width: 400px;
+  //height: 100%;
+  //background-color: #faf7fc;
   flex-direction: column;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -11,6 +11,8 @@
   font-size: 14px;
   flex-shrink: 0;
   transition: transform 0.3s ease, width 0.3s ease, padding 0.3s ease;
+
+  background: linear-gradient(135deg, #faf7fc 40%, #e9e4f8 100%);
 
   @media (max-width: 1200px) {
     width: 80vw; /* Make it take full width of parent */
@@ -26,7 +28,7 @@
 }
 
 .settings-panel.moves-tab-active {
-  height: 716px; /* Apply this only when moves tab is active */
+  height: 750px; /* Apply this only when moves tab is active */
 }
 
 .toggle-btn {
@@ -99,9 +101,8 @@
 }
 
 .content-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex: 1 1 auto; /* take all available vertical space */
+  overflow-y: auto; /* if content is long, it scrolls */
   display: flex;
   flex-direction: column;
 }
@@ -123,204 +124,202 @@
   background-color: #b02a37;
 }
 
-.tabs {
-  display: flex;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 42px;
-  z-index: 10;
-  gap: 0;
-  background: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
-  max-height: 300px;
-
-
+.moves-container {
+  position: relative;
+  /* optional max width or full width */
 }
 
-.tabs button {
-  flex: 1;
-  padding: 0.75rem 0rem;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  font-weight: bold;
-  color: #555;
-  transition:
-    border-color 0.3s ease,
-    color 0.3s ease,
-    background-color 0.2s ease;
-
-  @media (max-width: 1200px) {
-    min-height: 32px;
-  }
-}
-
-.tabs button:hover:not(.active) {
-  background-color: #f5f7fa;
-  color: #333;
-}
-
-.tabs button.active {
-  //background-color: #f2f9fc;
-  border-bottom-color: #3f51b5;
-  font-weight: 700;
-  color: #3f51b5;
-  background-color: #e8ecff;
-  box-shadow: 0 4px 8px rgba(63, 81, 181, 0.15);
-
-}
-
-@media (max-width: 1200px) {
-  .tabs button {
-    min-height: 40px;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-  }
-}
-
-.tab-content {
-  display: flex;
-  gap: 1rem;
-  z-index: 1;         /* keep behind tabs */
-  position: relative; /* ensure stacking context */
-}
-
-.tabs button:first-child {
-  border-right: 1px solid #ccc; /* vertical separator */
-}
-
-.table-wrapper {
-  width: 100%;
-}
-
-.table-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table-body-wrapper {
-  max-height: 360px; /* Adjust as needed */
+.table-scroll-wrapper {
+  max-height: 700px; /* adjust this height as needed */
   overflow-y: auto;
+  height: 447px;
 }
 
-.moves-tab {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: auto;
+/* Optional: style scrollbar for WebKit browsers */
+.table-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Existing table styles (ensure they don't conflict with the new container) */
-.moves-table {
-  table-layout: fixed;
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.flat-moves-table {
   width: 100%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
+  border-spacing: 0; /* remove all gaps between cells */
+  font-size: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  margin-top: 40px;
+  z-index: 1; /* above gradient */
+  table-layout: fixed;  /* Fix column widths */
   background-color: #fff;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+.flat-moves-table tbody tr {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 
-/* Sticky Header styling */
-.moves-table th {
-  padding: 10px 3px;
-  text-align: center;
-  font-size: 1.05rem;
-  font-weight: 600;
-  background-color: #d0d7de;
-  position: sticky;           /* Makes the header sticky */
-  top: 0;                     /* Sticks to the top of the scroll container */
-  z-index: 1;                 /* Ensures it stays above scrolling tbody content */
-  user-select: none;
-  background: linear-gradient(to bottom, #f0f3f6, #d0d7de);
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
-  color: #333;
-  letter-spacing: 0.03em;
+.flat-moves-table tbody tr:hover {
+  background: transparent; /* or just remove this block */
+  box-shadow: none;
 }
 
-/* Specific styling for the Move Number header and cell */
-.move-number-header {
-  width: 10%;/* Keep this width for the number column */
-  text-align: center;
-}
-
-.move-number-cell {
-  width: 3%;
-  text-align: center;
-  font-size: 0.95rem;
-  color: #555;
-  font-weight: bold;
-}
-
-/* Table body cells */
-.moves-table td {
-  padding: 10px 15px;
-  text-align: left;
-  font-size: 0.85rem;
-  border-top: 1px solid #ccc;
-  border-right: 1px solid #ccc;
-  color: #555;
-}
-
-.moves-table tr td:last-child {
-  border-right: none;
-}
-
-/* Row banding and hover */
-.moves-table tbody tr {
-  background-color: white; /* Or any single color you want */
-
-}
-
-.moves-table tbody tr:last-child {
-  border-bottom: none; /* No border after the last row */
-}
-
-/* Coordinate styling */
-.coord {
-  letter-spacing: 0.5px;
-  font-weight: 500;
-  color: #2c3e50;
+/* Highlight only hovered cell */
+.flat-moves-table td.move-cell.cross:not(.current-move-cell):hover,
+.flat-moves-table td.move-cell.circle:not(.current-move-cell):hover {
+  background: rgba(0, 191, 255, 0.15);
   cursor: pointer;
-  transition: color 0.1s ease, text-decoration 0.1s ease;
 }
 
-.coord:hover {
-  color: #007bff; /* or any primary accent color */
+/* No hover effect on empty cells or current move cell */
+.flat-moves-table td.move-cell:not(.cross):not(.circle):hover,
+.flat-moves-table td.current-move-cell:hover {
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* Disable hover on current move as before */
+.flat-moves-table td.current-move-cell:hover {
+  background: #fff9db;
+  box-shadow: none;
+  cursor: default;
+}
+
+.flat-moves-table td {
+  padding: 8px;
+  vertical-align: middle;
+  color: #222;
+  border-bottom: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.flat-moves-table td + td {
+  border-left: 1px solid #ccc; /* lighter separator */
+}
+
+.flat-moves-table td:nth-child(even) {
+  border-left: none !important; /* keep your custom logic */
+}
+
+.move-number {
+  width: 36px;
+  text-align: center;
+  font-weight: 400;
+  background: #e8f0fe;
+  color: #3a4a6d;
+  user-select: none;
+}
+
+.move-cell.cross .coord {
+  color: #337ab7; /* calm blue */
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.move-cell.cross .coord:hover {
+  color: #275a8d;
   text-decoration: underline;
 }
 
-/* Strong tag (number) styling - ensure no conflicting properties */
-strong {
+.move-cell.circle .coord {
+  color: #d9534f; /* nice warm red */
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.move-cell.circle .coord:hover {
+  color: #a93226;
+  text-decoration: underline;
+}
+
+.current-move-cell {
+  background: #fff9db; /* your light yellow highlight */
+  color: #7a6f00;
+  font-weight: 600;
+  cursor: default;       /* change cursor to default to indicate no interaction */
+  user-select: none;     /* disable text selection */
+  transition: background-color 0.3s ease;
+}
+
+.current-move-cell:hover {
+  background: #fff4b3; /* a bit brighter yellow on hover */
+}
+
+.current-move-cell .coord {
+  text-decoration: none !important; /* no underline */
+  cursor: default; /* no pointer cursor */
+  color: #7a6f00; /* keep your current move text color */
+  box-shadow: none !important;
+}
+
+.current-move-cell .coord:hover {
+  text-decoration: none !important; /* prevent underline on hover */
+  color: #7a6f00; /* keep same color on hover */
+  cursor: default;
+  box-shadow: none !important;
+}
+
+.coord {
+  cursor: pointer;
+}
+
+.bold {
   font-weight: 700;
-  color: #1a242f;
-  margin-right: 4px;
-  display: inline-block;
+  color: #004080; /* deep navy for bolded */
+  text-shadow: 0 0 5px rgba(0, 64, 128, 0.4);
 }
 
 .button-row {
-  margin-top: auto; /* Push button row to bottom */
+  padding-left: 20px;
+  padding-right: 20px;
+  flex-shrink: 0; /* don't shrink */
+  margin-top: 15px; /* push it down */
   display: flex;
-  gap: 12px;
-}
-
-.lower-panel {
-  margin-top: auto;
+  gap: 16px;
+  justify-content: center;
 }
 
 .change-move-btn {
-  margin-top: 16px;
-  padding: 8px;
   background-color: #0d6efd; /* Bootstrap blue */
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 13px;
   cursor: pointer;
-  width: 20%;
+  flex: 1;
+  max-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(13, 110, 253, 0.4);
+  user-select: none;
+}
+
+.change-move-btn i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.change-move-btn:hover:not(:disabled) {
+  background-color: #0b5ed7;
+  box-shadow: 0 6px 20px rgba(11, 94, 215, 0.6);
+  transform: translateY(-2px);
+}
+
+.change-move-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(13, 110, 253, 0.4);
 }
 
 .change-move-btn:disabled {
@@ -328,10 +327,32 @@ strong {
   color: #f0f0f0;
   cursor: not-allowed;
   opacity: 0.65;
+  box-shadow: none;
+  transform: none;
 }
 
-.change-move-btn:not(:disabled):hover {
-  background-color: #0b5ed7;
+/* For the New Game button, make it consistent with the others but distinct */
+.clear-btn {
+  padding: 10px 18px;
+  background: linear-gradient(45deg, #ff7e5f, #feb47b);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  max-width: 160px;
+  box-shadow: 0 4px 12px rgba(255, 126, 95, 0.6);
+  user-select: none;
+}
+
+.clear-btn:hover {
+  background: linear-gradient(45deg, #feb47b, #ff7e5f);
+  box-shadow: 0 7px 20px rgba(254, 180, 123, 0.8);
+  transform: translateY(-2px);
+}
+
+.clear-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(255, 126, 95, 0.6);
 }
 
 .bold {

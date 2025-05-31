@@ -3,51 +3,55 @@
 
   <top-eval-panel></top-eval-panel>
 
-  <div class="content-wrapper">
 
-    <!-- Moves Tab Content -->
-    <div *ngIf="activeTab === 'moves'" class="moves-tab tab-content">
-      <div class="table-wrapper">
-        <table class="moves-table">
-          <thead>
-          <tr>
-            <th class="move-number-header">#</th>
-            <th>Cross</th>
-            <th>Circle</th>
-          </tr>
-          </thead>
-        </table>
-        <div class="table-body-wrapper" #scrollContainer>
-          <table class="moves-table">
-            <tbody>
-            <tr *ngFor="let i of maxMovesArray()">
-              <td class="move-number-cell"><strong>{{ i + 1 }}.</strong></td>
-              <td>
-              <span *ngIf="player1Moves[i]">
-                <span class="coord"
-                      [ngClass]="{ 'bold': isCurrentMove(true, i) }"
-                      (click)="onMoveClick(i, 'player1')"
-                      style="cursor: pointer;">
-                  {{ player1Moves[i] }}
-                </span>
-              </span>
-              </td>
-              <td>
-              <span *ngIf="player2Moves[i]">
-                 <span class="coord"
-                       [ngClass]="{ 'bold': isCurrentMove(false, i) }"
-                       (click)="onMoveClick(i, 'player2')"
-                       style="cursor: pointer;">
-                  {{ player2Moves[i] }}
-                </span>
-              </span>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <!-- Moves Tab Content -->
+  <div class="moves-container" *ngIf="activeTab === 'moves'">
+    <div class="table-scroll-wrapper">
+      <table class="flat-moves-table">
+        <tbody>
+        <tr *ngFor="let i of maxMovesArray(); let idx = index">
+          <td class="move-number"><strong>{{ idx + 1 }}.</strong></td>
+          <td
+            class="move-cell cross"
+            *ngIf="player1Moves[idx]; else emptyCell"
+            [ngClass]="{ 'current-move-cell': isCurrentMove(true, idx) }"
+            [attr.tabindex]="isCurrentMove(true, idx) ? -1 : 0"
+            (click)="!isCurrentMove(true, idx) && onMoveClick(idx, 'player1')"
+          >
+            <span
+              class="coord"
+              [ngClass]="{ bold: isCurrentMove(true, idx) }"
+              (click)="!isCurrentMove(true, idx) && onMoveClick(idx, 'player1')"
+            >
+              {{ player1Moves[idx] }}
+            </span>
+          </td>
+          <td
+            class="move-cell circle"
+            *ngIf="player2Moves[idx]; else emptyCell"
+            [ngClass]="{ 'current-move-cell': isCurrentMove(false, idx) }"
+            [attr.tabindex]="isCurrentMove(false, idx) ? -1 : 0"
+            (click)="!isCurrentMove(false, idx) && onMoveClick(idx, 'player2')"
+          >
+            <span
+              class="coord"
+              [ngClass]="{ bold: isCurrentMove(false, idx) }"
+              (click)="!isCurrentMove(false, idx) && onMoveClick(idx, 'player2')"
+            >
+              {{ player2Moves[idx] }}
+            </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <ng-template #emptyCell>
+        <td class="move-cell"></td>
+      </ng-template>
     </div>
+  </div>
+
+  <div class="content-wrapper">
 
     <div class="lower-panel" *ngIf="activeTab === 'moves'">
       <chart-panel></chart-panel>
