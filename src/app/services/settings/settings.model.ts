@@ -4,4 +4,5 @@ export interface Settings {
   playVsAi: boolean;
   showVisits: boolean;
   isSettingsVisible: boolean;
+  disableSoundEffects: boolean;
 }

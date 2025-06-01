@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {GameState} from './game-state.model';
 import {convertSmallBoard, isWin, WIN_MASKS} from '../utils';
+import {SettingsService} from '../settings/settings.service';
 
 @Injectable({providedIn: 'root'})
 export class GameStateService {
@@ -9,12 +10,15 @@ export class GameStateService {
   private gameStateSubject: BehaviorSubject<GameState>;
   private gameStateHistorySubject: BehaviorSubject<GameState[]>;
   private currentMoveDisplayedSubject: BehaviorSubject<number>;
+  private moveSound: HTMLAudioElement;
+  private newGameSound: HTMLAudioElement;
+  private soundDisabled: boolean = false;
 
   gameState$: Observable<GameState>;
   gameStateHistory$: Observable<GameState[]>;
   currentMoveDisplayed$: Observable<number>;
 
-  constructor() {
+  constructor(private settingsService: SettingsService) {
     this.gameStateSubject = new BehaviorSubject<GameState>(this.createStartState());
     this.gameState$ = this.gameStateSubject.asObservable();
 
@@ -23,9 +27,21 @@ export class GameStateService {
 
     this.currentMoveDisplayedSubject = new BehaviorSubject(0);
     this.currentMoveDisplayed$ = this.currentMoveDisplayedSubject.asObservable();
+    this.moveSound = new Audio('assets/move_sound_fast.mp3');
+    this.moveSound.preload = 'auto'; // optional: browser decides best preload strategy
+
+    this.newGameSound = new Audio('assets/new_game.mp3');
+    this.newGameSound.preload = 'auto'; // optional: browser decides best preload strategy
+
+    this.settingsService.settings$.subscribe(settings => {
+      this.soundDisabled = settings.disableSoundEffects;
+    })
   }
 
   makeMove(big: number, row: number, col: number, aiMove: boolean): void {
+    if (!this.soundDisabled) {
+      this.moveSound.play()
+    }
     const state = structuredClone(this.gameStateSubject.value);
 
     if (!this.canMove(state.board, big, row, col, state.activeBoard)) return;
@@ -126,6 +142,9 @@ export class GameStateService {
   }
 
   clearBoard(): void {
+    if (!this.soundDisabled) {
+      this.newGameSound.play()
+    }
     this.gameStateSubject.next(this.createStartState());
     this.gameStateHistorySubject.next([this.gameStateSubject.getValue()]);
     this.currentMoveDisplayedSubject.next(0);
