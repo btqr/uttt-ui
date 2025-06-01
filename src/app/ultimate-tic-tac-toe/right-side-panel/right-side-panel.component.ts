@@ -106,6 +106,14 @@ export class RightSidePanelComponent implements OnInit {
         event.preventDefault();
         this.onNext();
         break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.onUndo2();
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        this.onNext2();
+        break;
       case 'n':
         event.preventDefault();
         this.clearBoard.emit();
@@ -141,10 +149,26 @@ export class RightSidePanelComponent implements OnInit {
     this.gameStateService.undoMove();
   }
 
+  onUndo2() {
+    if (this.currentMove <= 1) {
+      return;
+    }
+    this.gameStateService.undoMove();
+    this.gameStateService.undoMove();
+  }
+
   onNext() {
     if (this.currentMove + 1 > this.moves.length) {
       return;
     }
+    this.gameStateService.goToNext();
+  }
+
+  onNext2() {
+    if (this.currentMove + 2 > this.moves.length) {
+      return;
+    }
+    this.gameStateService.goToNext();
     this.gameStateService.goToNext();
   }
 }
