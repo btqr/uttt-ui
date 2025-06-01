@@ -351,7 +351,7 @@
 
 @media (max-width: 1200px) { /* Adjust max-width breakpoint as needed for typical mobile devices */
   .settings-panel {
-    max-height: 470px;
+    max-height: 380px;
   }
 
   /* Optional: Adjust table padding/font-size for better mobile fit */
@@ -361,15 +361,14 @@
     font-size: 0.9rem;  /* Slightly smaller font */
   }
 
+  .table-scroll-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
   .move-number-header,
   .move-number-cell {
     width: 10%; /* Give numbers a bit more room if they get squeezed */
-  }
-
-  .clear-btn {
-    margin-top: 15px; /* Adjust margin if needed on mobile */
-    padding: 10px 15px; /* Slightly smaller padding for the button */
-    font-size: 0.9rem;
   }
 }
 
