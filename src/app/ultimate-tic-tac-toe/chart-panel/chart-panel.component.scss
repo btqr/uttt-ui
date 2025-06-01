@@ -6,7 +6,7 @@
 .eval-chart-container {
   padding: 8px 8px;
   padding-bottom: 4px;
-  height: 220px;
+  height: 210px;
   //background: linear-gradient(90deg, #faf9f6, #e5e1d8);
   background-color: #fff;
   //box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
@@ -15,6 +15,7 @@
   justify-content: center;
   transition: box-shadow 0.3s ease;
   border-top: lightgray 1px solid;
+  border-bottom: 1px lightgray solid;
   //border-bottom: lightgray 1px solid;
 }
 

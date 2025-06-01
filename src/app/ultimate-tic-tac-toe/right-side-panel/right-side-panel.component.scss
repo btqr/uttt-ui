@@ -259,6 +259,10 @@
   box-shadow: none !important;
 }
 
+.move-cell:focus {
+  outline: none;
+}
+
 .coord {
   cursor: pointer;
 }
@@ -273,7 +277,7 @@
   padding-left: 20px;
   padding-right: 20px;
   flex-shrink: 0; /* don't shrink */
-  margin-top: 15px; /* push it down */
+  margin-top: 22px; /* push it down */
   display: flex;
   gap: 16px;
   justify-content: center;
