@@ -1,19 +1,38 @@
-<div style="
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  margin-left: 800px;
-  margin-right: 800px;
-  margin-top: 100px;
-  min-height: 100px;
-  font-size: 2rem;
-  font-weight: 500;
-  color: #555;
-  background: #f9f9f9;
-  border: 2px dashed #ccc;
-  border-radius: 12px;
-  text-align: center;
-">
-  🚧 Coming Soon
+<div class="guide-container">
+  <h1>About the Ultimate Tic Tac Toe Engine</h1>
+
+  <h2>⚙️ Engine Overview</h2>
+  <p>
+    The engine on this page is a direct port of the engine from
+    <a href="https://www.codingame.com/multiplayer/bot-programming/tic-tac-toe/leaderboard?column=keyword&value=bortol" target="_blank" rel="noopener">CodinGame</a>,
+    ranking about <strong>10th out of 9,600</strong> players and 1st among 1,000+ Java bots. It runs efficiently on the client side using <strong>WebAssembly</strong>.
+  </p>
+
+  <h2>🧠 AI Architecture</h2>
+  <p>
+    The engine uses an <em>NNUE</em> (Efficiently Updatable Neural Network) sized <code>396x128x1</code>, combined with a Monte Carlo Tree Search (MCTS) best-first search called
+    <a href="https://www.codingame.com/playgrounds/55004/best-first-minimax-search-with-uct" target="_blank" rel="noopener">jacek-max</a>. The neural network weights are quantized to integers to fit within CodinGame's 100,000 character limit, featuring a hidden layer of size 128.
+  </p>
+
+  <h2>🔄 Training Process</h2>
+  <p>
+    The training followed an <strong>AlphaZero-style self-play</strong> approach, where the engine learned by playing against itself, starting from random weights. No prior knowledge of the game rules or strategies was encoded, the engine discovered effective play purely through self-play and reinforcement learning.
+  </p>
+  <p>
+    Training was done with a custom pipeline using a 10 million sample buffer over 200 iterations. The learning target mixed the game result and search evaluation equally (<code>0.5 × game result + 0.5 × search eval</code>), with 200 search iterations per move.
+  </p>
+  <p>
+    During training first moves were sampled with weighted randomness based on visit counts to encourage exploration. Batch size was 256, with the learning rate decreasing from <code>1e-4</code> to <code>1e-9</code>.
+  </p>
+
+  <h2>🚀 Performance and Tuning</h2>
+  <p>
+    The engine is optimized for CodinGame’s environment, focusing on deep rather than wide searches. Despite longer move times, some paths may be missed. The neural network evaluates the position from player to move perspective (therefore 2 accumulators are maintained during the search).
+  </p>
+  <p>
+    An alpha-beta pruning version was attempted but proved less competitive.
+  </p>
+
+  <h2>✉️ Contact</h2>
+  <p>If you'd like to reach out, feel free to contact me on Discord: <strong>bortol#2802</strong>.</p>
 </div>
