@@ -10,8 +10,10 @@ export class GameStateService {
   private gameStateSubject: BehaviorSubject<GameState>;
   private gameStateHistorySubject: BehaviorSubject<GameState[]>;
   private currentMoveDisplayedSubject: BehaviorSubject<number>;
+
   private moveSound: HTMLAudioElement;
   private newGameSound: HTMLAudioElement;
+  private changeMoveSound: HTMLAudioElement;
   private soundDisabled: boolean = false;
 
   gameState$: Observable<GameState>;
@@ -27,11 +29,13 @@ export class GameStateService {
 
     this.currentMoveDisplayedSubject = new BehaviorSubject(0);
     this.currentMoveDisplayed$ = this.currentMoveDisplayedSubject.asObservable();
+
     this.moveSound = new Audio('assets/move.mp3');
     this.moveSound.preload = 'auto';
-
     this.newGameSound = new Audio('assets/new_game.mp3');
     this.newGameSound.preload = 'auto';
+    this.changeMoveSound = new Audio('assets/change_move.mp3');
+    this.changeMoveSound.preload = 'auto';
 
     this.settingsService.settings$.subscribe(settings => {
       this.soundDisabled = settings.disableSoundEffects;
@@ -39,13 +43,10 @@ export class GameStateService {
   }
 
   makeMove(big: number, row: number, col: number, aiMove: boolean): void {
-    if (!this.soundDisabled && this.moveSound.readyState >= 2) {
-      this.moveSound.currentTime = 0;
-      this.moveSound.play();
-    }
     const state = structuredClone(this.gameStateSubject.value);
-
     if (!this.canMove(state.board, big, row, col, state.activeBoard)) return;
+
+    this.playSound(this.moveSound);
 
     state.board[big][row][col] = state.currentPlayer;
 
@@ -88,6 +89,7 @@ export class GameStateService {
   }
 
   undoMove(): void {
+    this.playSound(this.changeMoveSound);
     const currentMove = this.currentMoveDisplayedSubject.getValue() - 1;
     const gameState = this.gameStateHistorySubject.getValue()
       .find(gameState => gameState.currentMove == currentMove);
@@ -101,6 +103,7 @@ export class GameStateService {
   }
 
   changeCurrentMoveTo(move: number) {
+    this.playSound(this.changeMoveSound);
     const history = this.gameStateHistorySubject.getValue();
     if (move >= history.length) {
       return;
@@ -112,6 +115,7 @@ export class GameStateService {
   }
 
   goToStart() {
+    this.playSound(this.changeMoveSound);
     const history = this.gameStateHistorySubject.getValue();
     if (history.length <= 0) {
       return;
@@ -123,6 +127,7 @@ export class GameStateService {
   }
 
   goToEnd() {
+    this.playSound(this.changeMoveSound);
     const history = this.gameStateHistorySubject.getValue();
     const state = history[history.length - 1];
 
@@ -131,6 +136,7 @@ export class GameStateService {
   }
 
   goToNext() {
+    this.playSound(this.changeMoveSound);
     const history = this.gameStateHistorySubject.getValue();
     const currentMove = this.currentMoveDisplayedSubject.getValue();
     if (currentMove >= history.length) {
@@ -143,9 +149,7 @@ export class GameStateService {
   }
 
   clearBoard(): void {
-    if (!this.soundDisabled && this.newGameSound.readyState >= 2) {
-      this.newGameSound.play()
-    }
+    this.playSound(this.newGameSound);
     this.gameStateSubject.next(this.createStartState());
     this.gameStateHistorySubject.next([this.gameStateSubject.getValue()]);
     this.currentMoveDisplayedSubject.next(0);
@@ -157,6 +161,13 @@ export class GameStateService {
 
   getMiniBoardWinner(b: string[][][], big: number): string | null {
     return this.getWinningLine(b[big]);
+  }
+
+  private playSound(sound: HTMLAudioElement) {
+    if (!this.soundDisabled && sound.readyState >= 2) {
+      sound.currentTime = 0;
+      sound.play()
+    }
   }
 
   private createStartState(): GameState {
