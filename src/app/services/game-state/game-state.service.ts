@@ -28,10 +28,10 @@ export class GameStateService {
     this.currentMoveDisplayedSubject = new BehaviorSubject(0);
     this.currentMoveDisplayed$ = this.currentMoveDisplayedSubject.asObservable();
     this.moveSound = new Audio('assets/move.mp3');
-    this.moveSound.load();
+    this.moveSound.preload = 'auto';
 
     this.newGameSound = new Audio('assets/new_game.mp3');
-    this.newGameSound.load();
+    this.newGameSound.preload = 'auto';
 
     this.settingsService.settings$.subscribe(settings => {
       this.soundDisabled = settings.disableSoundEffects;
@@ -39,8 +39,9 @@ export class GameStateService {
   }
 
   makeMove(big: number, row: number, col: number, aiMove: boolean): void {
-    if (!this.soundDisabled) {
-      this.moveSound.play()
+    if (!this.soundDisabled && this.moveSound.readyState >= 2) {
+      this.moveSound.currentTime = 0;
+      this.moveSound.play();
     }
     const state = structuredClone(this.gameStateSubject.value);
 
@@ -142,7 +143,7 @@ export class GameStateService {
   }
 
   clearBoard(): void {
-    if (!this.soundDisabled) {
+    if (!this.soundDisabled && this.newGameSound.readyState >= 2) {
       this.newGameSound.play()
     }
     this.gameStateSubject.next(this.createStartState());
