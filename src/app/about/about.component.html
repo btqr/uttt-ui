@@ -1,4 +1,4 @@
-<div class="guide-container">
+<div class="about-container">
   <h1>About the Ultimate Tic Tac Toe Engine</h1>
 
   <h2>⚙️ Engine Overview</h2>
@@ -22,7 +22,7 @@
     Training was done with a custom pipeline using a 10 million sample buffer over 200 iterations. The learning target mixed the game result and search evaluation equally (<code>0.5 × game result + 0.5 × search eval</code>), with 200 search iterations per move.
   </p>
   <p>
-    During training first moves were sampled with weighted randomness based on visit counts to encourage exploration. Batch size was 256, with the learning rate decreasing from <code>1e-4</code> to <code>1e-9</code>.
+    During training, the first moves were selected using weighted randomness based on visit counts to introduce some variability. A batch size of 256 was used, and the learning rate gradually decreased from <code>1e-4</code> to <code>1e-9</code>. The training data was augmented with all possible symmetries.
   </p>
 
   <h2>🚀 Performance and Tuning</h2>
