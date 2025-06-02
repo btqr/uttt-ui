@@ -115,7 +115,16 @@
   background-color: #1abc9c;
 }
 
-.active {
+.sidebar li a.active {
   color: #40c4ff;
   font-weight: 600;
+}
+
+.sidebar li a.active::after {
+  width: 100%;
+}
+
+.sidebar li a.active i {
+  background-color: #40c4ff;
+  color: #1f2a38;
 }
