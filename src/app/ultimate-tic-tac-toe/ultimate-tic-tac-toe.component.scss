@@ -225,6 +225,7 @@
 }
 
 .show-btn {
+  line-height: 1;
   position: fixed; /* fixed to viewport */
   top: 20px;
   right: 20px;
@@ -281,4 +282,16 @@
 /* Color for O */
 .winner-o {
   color: #dc3545;
+}
+
+.game-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }

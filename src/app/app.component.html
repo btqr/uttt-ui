@@ -1,8 +1,10 @@
-<div class="layout-container">
-  <div class="layout-content">
-    <div class="game-title">Ultimate Tic Tac Toe</div>
-    <app-ultimate-tic-tac-toe></app-ultimate-tic-tac-toe>
+<div class="app-container">
+  <side-bar (sidebarToggle)="sidebarVisible = $event"></side-bar>
+  <div class="layout-container">
+    <div class="layout-content" [class.expanded]="!sidebarVisible">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
   </div>
-  <app-footer></app-footer>
 </div>
 

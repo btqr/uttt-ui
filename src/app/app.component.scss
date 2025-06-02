@@ -1,15 +1,3 @@
-.game-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-  color: #333;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
 html, body {
   height: 100%;
   margin: 0;
@@ -21,6 +9,7 @@ app-footer {
 }
 
 .layout-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -51,4 +40,9 @@ app-footer {
 .layout-wrapper.popup-active app-game-over-dialog {
   pointer-events: auto; /* allow popup clicks */
   z-index: 1200;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
 }

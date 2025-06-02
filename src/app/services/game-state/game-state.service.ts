@@ -27,11 +27,11 @@ export class GameStateService {
 
     this.currentMoveDisplayedSubject = new BehaviorSubject(0);
     this.currentMoveDisplayed$ = this.currentMoveDisplayedSubject.asObservable();
-    this.moveSound = new Audio('assets/move_sound_fast.mp3');
-    this.moveSound.preload = 'auto'; // optional: browser decides best preload strategy
+    this.moveSound = new Audio('assets/move.mp3');
+    this.moveSound.load();
 
     this.newGameSound = new Audio('assets/new_game.mp3');
-    this.newGameSound.preload = 'auto'; // optional: browser decides best preload strategy
+    this.newGameSound.load();
 
     this.settingsService.settings$.subscribe(settings => {
       this.soundDisabled = settings.disableSoundEffects;

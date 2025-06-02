@@ -11,7 +11,7 @@ export class SettingsService {
     playVsAi: false,
     showVisits: true,
     isSettingsVisible: true,
-    disableSoundEffects: true
+    disableSoundEffects: false
   });
 
   settings$: Observable<Settings>;

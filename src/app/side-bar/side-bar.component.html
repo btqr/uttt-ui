@@ -1,0 +1,21 @@
+<div class="sidebar-wrapper" [class.hidden]="!sidebarVisible">
+  <nav class="sidebar">
+    <ul>
+      <li><a routerLink="/play" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fas fa-brain"></i> Play
+      </a></li>
+
+      <li><a routerLink="/guide" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fas fa-book"></i> Guide
+      </a></li>
+
+      <li><a routerLink="/about" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <i class="fas fa-circle-info"></i> About
+      </a></li>
+    </ul>
+  </nav>
+
+  <button class="toggle-sidebar-btn" (click)="toggleSidebar()">
+    <i class="fas" [ngClass]="sidebarVisible ? 'fa-angle-left' : 'fa-angle-right'"></i>
+  </button>
+</div>
