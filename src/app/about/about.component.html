@@ -3,15 +3,18 @@
 
   <h2>⚙️ Engine Overview</h2>
   <p>
-    The engine on this page is a direct port of the engine from
+    The engine on this page is a direct port of the Java engine from
     <a href="https://www.codingame.com/multiplayer/bot-programming/tic-tac-toe/leaderboard?column=keyword&value=bortol" target="_blank" rel="noopener">CodinGame</a>,
-    ranking about <strong>10th out of 9,600</strong> players and 1st among 1,000+ Java bots. It runs efficiently on the client side using <strong>WebAssembly</strong>.
+    ranking about <strong>10th out of 9,600</strong> players and 1st among 1,000+ Java bots. It runs efficiently on the client side using <strong>WebAssembly</strong>. The engine's code is not disclosed, as it could hurt competitiveness on the CodinGame platform.
   </p>
 
   <h2>🧠 AI Architecture</h2>
   <p>
     The engine uses an <em>NNUE</em> (Efficiently Updatable Neural Network) sized <code>396x128x1</code>, combined with a Monte Carlo Tree Search (MCTS) best-first search called
-    <a href="https://www.codingame.com/playgrounds/55004/best-first-minimax-search-with-uct" target="_blank" rel="noopener">jacek-max</a>. The neural network weights are quantized to integers to fit within CodinGame's 100,000 character limit, featuring a hidden layer of size 128.
+    <a href="https://www.codingame.com/playgrounds/55004/best-first-minimax-search-with-uct" target="_blank" rel="noopener">jacek-max</a>. The neural network weights are quantized to integers to fit within CodinGame's 100,000 character limit, featuring a hidden layer of size 128. The neural network evaluates the position from player to move perspective (therefore 2 accumulators are maintained during the search).
+  </p>
+  <p>
+    An alpha-beta version was attempted but proved less competitive in my implementation..
   </p>
 
   <h2>🔄 Training Process</h2>
@@ -27,10 +30,7 @@
 
   <h2>🚀 Performance and Tuning</h2>
   <p>
-    The engine is optimized for CodinGame’s environment, focusing on deep rather than wide searches. Despite longer move times, some paths may be missed. The neural network evaluates the position from player to move perspective (therefore 2 accumulators are maintained during the search).
-  </p>
-  <p>
-    An alpha-beta pruning version was attempted but proved less competitive.
+    The engine is optimized for CodinGame’s environment, focusing on deep rather than wide searches. Despite longer move times, some paths may be missed.
   </p>
 
   <h2>✉️ Contact</h2>
